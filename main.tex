@@ -1,0 +1,109 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- Codificación y lengua ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+
+% --- Tipografía ---
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Márgenes ---
+\usepackage[top=3cm, bottom=3cm, left=3.5cm, right=2.5cm]{geometry}
+
+% --- Interlineado ---
+\usepackage{setspace}
+\onehalfspacing
+
+% --- Hipervínculos ---
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+
+% --- Imágenes y figuras ---
+\usepackage{graphicx}
+\usepackage{float}
+
+% --- Tablas ---
+\usepackage{booktabs}
+
+% --- Matemáticas ---
+\usepackage{amsmath, amssymb}
+
+% --- Bibliografía con natbib (autor-año) ---
+\usepackage[authoryear, round]{natbib}
+\bibliographystyle{plainnat}
+
+% ============================================================
+%  DATOS DEL TRABAJO
+% ============================================================
+\title{
+  \textbf{Título del Trabajo Final de Grado} \\[0.5em]
+  \large Subtítulo o descripción breve
+}
+\author{
+  Nombre Apellido \\
+  \small Universidad / Facultad \\
+  \small Grado en \ldots \\[0.5em]
+  \small Director/a: Nombre del Director
+}
+\date{Marzo de 2026}
+
+% ============================================================
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section*{Resumen}
+\addcontentsline{toc}{section}{Resumen}
+
+Breve descripción del trabajo (150--250 palabras).
+
+\bigskip
+\noindent\textbf{Palabras clave:} PyMEs, Business Intelligence, lenguaje natural, SQL, analítica de datos.
+
+\newpage
+
+% ============================================================
+\section{Introducción}
+
+Texto introductorio que contextualiza el trabajo, presenta el problema y enuncia los objetivos.
+
+% ============================================================
+\input{problematica}   % Sección 2 – Problemática
+
+% ============================================================
+\section{Marco Teórico}
+
+Desarrollo del marco conceptual y estado del arte.
+
+% ============================================================
+\section{Metodología}
+
+Descripción del enfoque metodológico empleado.
+
+% ============================================================
+\section{Desarrollo / Implementación}
+
+Descripción de la solución propuesta y su implementación.
+
+% ============================================================
+\section{Resultados y Discusión}
+
+Presentación y análisis de los resultados obtenidos.
+
+% ============================================================
+\section{Conclusiones}
+
+Síntesis de los hallazgos, limitaciones y líneas de trabajo futuras.
+
+% ============================================================
+\newpage
+\bibliography{referencias}
+
+\end{document}
