@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[10pt, a4paper, twocolumn]{article}
 
 % --- Codificación y lengua ---
 \usepackage[utf8]{inputenc}
@@ -10,11 +10,12 @@
 \usepackage{microtype}
 
 % --- Márgenes ---
-\usepackage[top=3cm, bottom=3cm, left=3.5cm, right=2.5cm]{geometry}
+% Ajustados para un formato clásico de artículo a dos columnas
+\usepackage[top=2.5cm, bottom=2.5cm, left=2cm, right=2cm]{geometry}
 
 % --- Interlineado ---
 \usepackage{setspace}
-\onehalfspacing
+\singlespacing 
 
 % --- Hipervínculos ---
 \usepackage[hidelinks]{hyperref}
@@ -29,81 +30,95 @@
 
 % --- Matemáticas ---
 \usepackage{amsmath, amssymb}
+% Evitar saltos de página indeseados antes de secciones en dos columnas
+\usepackage{needspace}
 
-% --- Bibliografía con natbib (autor-año) ---
-\usepackage[authoryear, round]{natbib}
-\bibliographystyle{plainnat}
+% --- Bibliografía con natbib (estilo numérico) ---
+\usepackage[numbers, square]{natbib}
+\bibliographystyle{unsrtnat}
 
 % ============================================================
-%  DATOS DEL TRABAJO
+%  DATOS DEL TRABAJO [cite: 1, 2, 3]
 % ============================================================
 \title{
-  \textbf{Título del Trabajo Final de Grado} \\[0.5em]
-  \large Subtítulo o descripción breve
+  \textbf{Diseño e Implementación de una Herramienta de Inteligencia de Negocios Basada en Lenguaje Natural para Pequeñas y Medianas Empresas} \\[0.5em]
+  \large Un enfoque basado en arquitecturas de dashboarding generativo persistente para la democratización del acceso a datos.
 }
 \author{
-  Nombre Apellido \\
-  \small Universidad / Facultad \\
-  \small Grado en \ldots \\[0.5em]
-  \small Director/a: Nombre del Director
+  Lucas J. Martinez, Nahuel A. Carro \\
+  \small Prof. Javier D. Rabuch
 }
-\date{Marzo de 2026}
+\date{11 de julio de 2026}
 
 % ============================================================
 \begin{document}
 
-\maketitle
-\newpage
+% Configuramos el título, resumen y palabras clave para que ocupen
+% el ancho total de la página antes de dividir en dos columnas.
+\twocolumn[
+  \begin{@twocolumnfalse}
+    \maketitle
 
-\tableofcontents
-\newpage
-
-% ============================================================
-\section*{Resumen}
-\addcontentsline{toc}{section}{Resumen}
-
-Breve descripción del trabajo (150--250 palabras).
-
-\bigskip
-\noindent\textbf{Palabras clave:} PyMEs, Business Intelligence, lenguaje natural, SQL, analítica de datos.
-
-\newpage
-
-% ============================================================
-\section{Introducción}
-
-Texto introductorio que contextualiza el trabajo, presenta el problema y enuncia los objetivos.
+    \begin{abstract}
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at tortor maximus, convallis lectus at, fringilla nibh. Curabitur vel tortor odio. Quisque vitae vestibulum quam, in vestibulum nunc. Mauris maximus condimentum facilisis. Aliquam a pellentesque nulla. Vestibulum rhoncus commodo lectus, consequat vehicula mi commodo ut. Nulla fringilla erat at neque tempor, quis mattis urna mollis. Vivamus auctor id dolor non faucibus. Vivamus pharetra maximus dui vel porttitor. Nulla ac ultricies felis. Nullam sollicitudin feugiat odio, scelerisque accumsan libero congue sit amet. Morbi maximus est leo, a finibus odio mattis et. Phasellus elit nisl, porta nec volutpat et, ullamcorper id lacus.
+    \end{abstract}
+    
+    \vspace{0.5em}
+    \noindent\textbf{Palabras clave:} Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    \vspace{2em}
+  \end{@twocolumnfalse}
+]
 
 % ============================================================
-\input{problematica}   % Sección 2 – Problemática
+\section{Introducción} % [cite: 14]
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at tortor maximus, convallis lectus at, fringilla nibh. Curabitur vel tortor odio. Quisque vitae vestibulum quam, in vestibulum nunc. Mauris maximus condimentum facilisis. Aliquam a pellentesque nulla. Vestibulum rhoncus commodo lectus, consequat vehicula mi commodo ut. Nulla fringilla erat at neque tempor, quis mattis urna mollis. Vivamus auctor id dolor non faucibus. Vivamus pharetra maximus dui vel porttitor. Nulla ac ultricies felis. Nullam sollicitudin feugiat odio, scelerisque accumsan libero congue sit amet. Morbi maximus est leo, a finibus odio mattis et. Phasellus elit nisl, porta nec volutpat et, ullamcorper id lacus.
+
+
+
+\section{Justificación} % [cite: 40]
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at tortor maximus, convallis lectus at, fringilla nibh. Curabitur vel tortor odio. Quisque vitae vestibulum quam, in vestibulum nunc. Mauris maximus condimentum facilisis. Aliquam a pellentesque nulla. Vestibulum rhoncus commodo lectus, consequat vehicula mi commodo ut. Nulla fringilla erat at neque tempor, quis mattis urna mollis. Vivamus auctor id dolor non faucibus. Vivamus pharetra maximus dui vel porttitor. Nulla ac ultricies felis. Nullam sollicitudin feugiat odio, scelerisque accumsan libero congue sit amet. Morbi maximus est leo, a finibus odio mattis et. Phasellus elit nisl, porta nec volutpat et, ullamcorper id lacus.
+
+\Needspace{20\baselineskip}
+\section{Marco Teórico} % [cite: 54]
+\subsection{PyMEs en Argentina} % [cite: 55]
+% ...
+
+\subsection{Conversion de texto a lenguaje SQL} % [cite: 55]
+% ...
+
+\subsection{Generacion de tableros de datos} % [cite: 55]
+% ...
+
+\section{Estado del arte} % [cite: 54]
+
+\section{Desarrollo} % [cite: 228]
+\subsection{Arquitectura de la aplicacion} % [cite: 229]
+% ...
+
+
+\subsection{Agente Decisor} % [cite: 229]
+% ...
+
+\subsection{Agente visualizador} % [cite: 229]
+% ...
+
+
+\subsection{Agente de base de datos} % [cite: 229]
+% ...
+
+\subsection{Interfaz de usuario} % [cite: 229]
+% ...
+
+\section{Conclusiones} % [cite: 315]
+% ...
+
+\section{Líneas futuras de investigación} % [cite: 321]
+% ...
+
+\section*{Agradecimientos} % [cite: 352]
+% ...
 
 % ============================================================
-\section{Marco Teórico}
-
-Desarrollo del marco conceptual y estado del arte.
-
-% ============================================================
-\section{Metodología}
-
-Descripción del enfoque metodológico empleado.
-
-% ============================================================
-\section{Desarrollo / Implementación}
-
-Descripción de la solución propuesta y su implementación.
-
-% ============================================================
-\section{Resultados y Discusión}
-
-Presentación y análisis de los resultados obtenidos.
-
-% ============================================================
-\section{Conclusiones}
-
-Síntesis de los hallazgos, limitaciones y líneas de trabajo futuras.
-
-% ============================================================
-\newpage
 \bibliography{referencias}
 
 \end{document}
