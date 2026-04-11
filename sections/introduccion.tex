@@ -1,0 +1,57 @@
+\section{Introducción}
+
+Las pequeñas y medianas empresas (PyMEs) representan un pilar fundamental de las
+economías latinoamericanas; sin embargo, su acceso a herramientas de inteligencia
+de negocios y analítica de datos sigue siendo limitado. Según
+\citet{tovar2011bi}, los principales obstáculos para la adopción de soluciones
+de \textit{Business Intelligence} (BI) en este segmento empresarial son el costo
+elevado de las plataformas, la falta de personal cualificado y la complejidad de
+las integraciones con sistemas existentes.
+
+Esta brecha tecnológica se profundiza cuando se considera que, a diferencia de
+las grandes corporaciones, las PyMEs carecen de departamentos de TI dedicados
+capaces de gestionar infraestructuras de datos complejas
+\citep{cordero2020sistemas}. A esto se suma la incompatibilidad entre sistemas
+heredados y las nuevas tendencias tecnológicas, lo cual constituye una barrera
+estructural que dificulta la modernización del sector empresarial y limita sus
+posibilidades de crecimiento. Asimismo, la complejidad percibida al intentar adoptar
+nuevas tecnologías de la información termina siendo un obstáculo que desanima a
+muchas empresas \citep{nurqamarani2021complejidad}. Las interfaces técnicas de
+las herramientas de analítica requieren conocimientos especializados en bases de
+datos, estadística y ciencia de datos que frecuentemente no están al alcance del
+perfil medio de los trabajadores de una PyME, traduciéndose en una subutilización
+de la información organizacional.
+
+Incluso cuando las organizaciones logran implementar soluciones analíticas, la
+falta de una cultura basada en datos y la escasez de competencias internas
+generan un retorno de inversión insatisfactorio \citep{wamba2017desafios}. En
+consecuencia, existe una necesidad urgente de soluciones de bajo código o
+lenguaje natural que permitan democratizar el acceso a la información
+estructurada.
+
+Frente a este panorama, la Inteligencia Artificial Generativa emerge como una
+tecnología catalizadora para resolver esta problemática. La capacidad de los
+grandes modelos de lenguaje (LLMs) para procesar información y generar código
+facilita la creación de sistemas analíticos más accesibles
+\citep{barbon2024generative}. Proyecciones recientes indican que la
+automatización mediante agentes de IA y la inteligencia de decisión son
+tendencias clave para reducir la brecha analítica en el sector corporativo
+\citep{gartner2025predicciones}.
+
+Este trabajo presenta BIGENIA, una arquitectura de Inteligencia de Negocios
+diseñada para mitigar estos obstáculos mediante el uso de lenguaje natural. El
+sistema implementa un agente de \textit{Generative Business Intelligence}
+(GenBI) capaz de interpretar consultas expresadas en lenguaje cotidiano,
+convertirlas en código estructurado y desplegar los resultados mediante gráficos
+interactivos de Plotly. Para validar el funcionamiento de esta arquitectura y su
+precisión en la extracción de datos, se utiliza el conjunto de datos relacional
+Chinook como entorno de prueba. De este modo, se busca proporcionar una interfaz
+que elimine la necesidad de intermediarios técnicos o conocimientos avanzados en
+SQL.
+
+El presente artículo se estructura de la siguiente manera: la Sección 2 presenta
+la justificación del trabajo. La Sección 3 detalla el marco teórico fundamental.
+La Sección 4 revisa el estado del arte en IA aplicada a bases de datos.
+Posteriormente, la Sección 5 describe de forma exhaustiva la arquitectura de la
+aplicación, desglosando los agentes y componentes integrados. Finalmente, se
+exponen las conclusiones obtenidas y se proponen futuras líneas de investigación.

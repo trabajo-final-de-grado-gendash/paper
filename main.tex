@@ -30,7 +30,6 @@
 
 % --- Matemáticas ---
 \usepackage{amsmath, amssymb}
-% Evitar saltos de página indeseados antes de secciones en dos columnas
 \usepackage{needspace}
 
 % --- Bibliografía con natbib (estilo numérico) ---
@@ -38,7 +37,7 @@
 \bibliographystyle{unsrtnat}
 
 % ============================================================
-%  DATOS DEL TRABAJO [cite: 1, 2, 3]
+%  DATOS DEL TRABAJO
 % ============================================================
 \title{
   \textbf{BIGENIA: Implementación de una Herramienta de Inteligencia de Negocios basada en Lenguaje Natural para PyMEs} \\[0.5em]
@@ -53,70 +52,51 @@
 % ============================================================
 \begin{document}
 
-% Configuramos el título, resumen y palabras clave para que ocupen
-% el ancho total de la página antes de dividir en dos columnas.
-\twocolumn[
-  \begin{@twocolumnfalse}
-    \maketitle
+\maketitle
 
-    \begin{abstract}
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at tortor maximus, convallis lectus at, fringilla nibh. Curabitur vel tortor odio. Quisque vitae vestibulum quam, in vestibulum nunc. Mauris maximus condimentum facilisis. Aliquam a pellentesque nulla. Vestibulum rhoncus commodo lectus, consequat vehicula mi commodo ut. Nulla fringilla erat at neque tempor, quis mattis urna mollis. Vivamus auctor id dolor non faucibus. Vivamus pharetra maximus dui vel porttitor. Nulla ac ultricies felis. Nullam sollicitudin feugiat odio, scelerisque accumsan libero congue sit amet. Morbi maximus est leo, a finibus odio mattis et. Phasellus elit nisl, porta nec volutpat et, ullamcorper id lacus.
-    \end{abstract}
+\begin{abstract}
+  Este trabajo presenta BIGENIA, una arquitectura de Inteligencia de Negocios
+  Generativa (GenBI) diseñada para democratizar el análisis de datos en
+  Pequeñas y Medianas Empresas (PyMEs) eliminando la barrera de los
+  intermediarios técnicos.
 
-    \vspace{0.5em}
-    \noindent\textbf{Palabras clave:} Lorem ipsum dolor sit amet, consectetur adipiscing elit
-    \vspace{2em}
-  \end{@twocolumnfalse}
-]
+  Se implementa un sistema multiagente capaz de transformar consultas en
+  lenguaje natural en sentencias SQL y generar visualizaciones interactivas
+  mediante la librería Plotly. La validación de la arquitectura se realiza
+  sobre la base de datos relacional Chinook, aplicando una metodología de
+  evaluación \textit{LLM-as-a-Judge} sobre un conjunto de prueba de 50
+  consultas categorizadas por dificultad, incluyendo casos fuera de dominio.
+
+  Los resultados empíricos demuestran un cumplimiento parcial y altamente
+  satisfactorio del objetivo propuesto: el sistema exhibe una elevada
+  precisión en la resolución de consultas de complejidad baja y media, y
+  demuestra robustez al rechazar de forma segura peticiones ajenas al
+  contexto analítico.
+
+  Aunque se observa una degradación controlada del rendimiento ante
+  consultas que requieren uniones (\textit{JOINs}) complejas, la herramienta
+  reduce drásticamente la curva de aprendizaje operativo. Se concluye que
+  BIGENIA valida la viabilidad de las interfaces basadas en lenguaje natural
+  para dotar de autonomía analítica a los usuarios de negocio.
+\end{abstract}
+
+\vspace{0.5em}
+\noindent\textbf{Palabras clave:} Inteligencia Artificial Generativa, Business
+Intelligence, Lenguaje Natural, PyME, Agentes de IA, Visualización de Datos.
+\vspace{2em}
 
 % ============================================================
-\section{Introducción} % [cite: 14]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at tortor maximus, convallis lectus at, fringilla nibh. Curabitur vel tortor odio. Quisque vitae vestibulum quam, in vestibulum nunc. Mauris maximus condimentum facilisis. Aliquam a pellentesque nulla. Vestibulum rhoncus commodo lectus, consequat vehicula mi commodo ut. Nulla fringilla erat at neque tempor, quis mattis urna mollis. Vivamus auctor id dolor non faucibus. Vivamus pharetra maximus dui vel porttitor. Nulla ac ultricies felis. Nullam sollicitudin feugiat odio, scelerisque accumsan libero congue sit amet. Morbi maximus est leo, a finibus odio mattis et. Phasellus elit nisl, porta nec volutpat et, ullamcorper id lacus.
+% SECCIONES DEL TRABAJO
+% ============================================================
 
-
-
-\section{Justificación} % [cite: 40]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at tortor maximus, convallis lectus at, fringilla nibh. Curabitur vel tortor odio. Quisque vitae vestibulum quam, in vestibulum nunc. Mauris maximus condimentum facilisis. Aliquam a pellentesque nulla. Vestibulum rhoncus commodo lectus, consequat vehicula mi commodo ut. Nulla fringilla erat at neque tempor, quis mattis urna mollis. Vivamus auctor id dolor non faucibus. Vivamus pharetra maximus dui vel porttitor. Nulla ac ultricies felis. Nullam sollicitudin feugiat odio, scelerisque accumsan libero congue sit amet. Morbi maximus est leo, a finibus odio mattis et. Phasellus elit nisl, porta nec volutpat et, ullamcorper id lacus.
-
-\Needspace{20\baselineskip}
-\section{Marco Teórico} % [cite: 54]
-\subsection{PyMEs en Argentina} % [cite: 55]
-% ...
-
-\subsection{Conversion de texto a lenguaje SQL} % [cite: 55]
-% ...
-
-\subsection{Generacion de tableros de datos} % [cite: 55]
-% ...
-
-\section{Estado del arte} % [cite: 54]
-
-\section{Desarrollo} % [cite: 228]
-\subsection{Arquitectura de la aplicacion} % [cite: 229]
-% ...
-
-
-\subsection{Agente Decisor} % [cite: 229]
-% ...
-
-\subsection{Agente visualizador} % [cite: 229]
-% ...
-
-
-\subsection{Agente de base de datos} % [cite: 229]
-% ...
-
-\subsection{Interfaz de usuario} % [cite: 229]
-% ...
-
-\section{Conclusiones} % [cite: 315]
-% ...
-
-\section{Líneas futuras de investigación} % [cite: 321]
-% ...
-
-\section*{Agradecimientos} % [cite: 352]
-% ...
+\input{sections/introduccion}
+\input{sections/justificacion}
+\input{sections/marco_teorico}
+\input{sections/estado_del_arte}
+\input{sections/desarrollo}
+\input{sections/conclusiones}
+\input{sections/lineas_futuras}
+\input{sections/agradecimientos}
 
 % ============================================================
 \bibliography{referencias}

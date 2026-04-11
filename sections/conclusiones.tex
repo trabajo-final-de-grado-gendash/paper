@@ -1,0 +1,28 @@
+\section{Conclusiones}
+
+La implementación de la arquitectura BIGENIA demuestra que es factible
+democratizar el acceso a datos en pequeñas y medianas empresas mediante
+Inteligencia Artificial Generativa. Los resultados empíricos obtenidos sobre el
+conjunto de datos relacional Chinook confirman que el sistema mitiga eficazmente
+la necesidad de intermediarios técnicos para la explotación de la información.
+
+Para la evaluación del sistema se empleó un enfoque metodológico de
+\textit{LLM-as-a-Judge}, analizando un conjunto de validación de entre 30 y 50
+consultas categorizadas por nivel de complejidad, incluyendo casos fuera de
+dominio. Los resultados indican que la herramienta cumple parcialmente, pero de
+manera altamente satisfactoria, con el objetivo planteado. El Agente de Base de
+Datos y el Agente Visualizador logran una elevada tasa de acierto conjunta en
+consultas de baja y media complejidad, seleccionando el tipo de gráfico adecuado
+en Plotly y generando la estructura de datos correcta. Asimismo, el sistema
+demuestra robustez al identificar y rechazar exitosamente peticiones de código o
+preguntas ajenas al contexto del negocio. Sin embargo, se observa una
+degradación controlada en el rendimiento frente a consultas de alta complejidad
+que requieren múltiples uniones (\textit{JOINs}) y subconsultas.
+
+Estos hallazgos evidencian que la arquitectura multiagente propuesta reduce
+sustancialmente la curva de aprendizaje inherente a las plataformas
+tradicionales de \textit{Business Intelligence}, operando dentro de márgenes
+seguros. Por lo tanto, se valida la viabilidad de interfaces basadas en lenguaje
+natural para dotar de autonomía analítica a los usuarios de negocio en el
+entorno PyME, dejando las consultas de mayor complejidad estructural para
+futuras iteraciones del modelo.
