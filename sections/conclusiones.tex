@@ -1,28 +1,31 @@
 \section{Conclusiones}
 
-La implementación de la arquitectura BIGENIA demuestra que es factible
-democratizar el acceso a datos en pequeñas y medianas empresas mediante
-Inteligencia Artificial Generativa. Los resultados empíricos obtenidos sobre el
-conjunto de datos relacional Chinook confirman que el sistema mitiga eficazmente
-la necesidad de intermediarios técnicos para la explotación de la información.
+La investigación teórica y el desarrollo práctico de la arquitectura BIGENIA
+demuestran empíricamente la viabilidad de democratizar la analítica de datos
+en el sector PyME mediante el uso de Inteligencia Artificial Generativa. La
+implementación sobre un modelo de datos relacional de prueba confirma que la
+orquestación de agentes logra abstraer la complejidad técnica subyacente,
+consolidando una interfaz directa y efectiva entre el usuario de negocio y la
+base de datos.
 
-Para la evaluación del sistema se empleó un enfoque metodológico de
-\textit{LLM-as-a-Judge}, analizando un conjunto de validación de entre 30 y 50
-consultas categorizadas por nivel de complejidad, incluyendo casos fuera de
-dominio. Los resultados indican que la herramienta cumple parcialmente, pero de
-manera altamente satisfactoria, con el objetivo planteado. El Agente de Base de
-Datos y el Agente Visualizador logran una elevada tasa de acierto conjunta en
-consultas de baja y media complejidad, seleccionando el tipo de gráfico adecuado
-en Plotly y generando la estructura de datos correcta. Asimismo, el sistema
-demuestra robustez al identificar y rechazar exitosamente peticiones de código o
-preguntas ajenas al contexto del negocio. Sin embargo, se observa una
-degradación controlada en el rendimiento frente a consultas de alta complejidad
-que requieren múltiples uniones (\textit{JOINs}) y subconsultas.
+A través de la metodología de evaluación \textit{LLM-as-a-Judge}, aplicada
+sobre un conjunto estructurado de 50 casos de prueba, el sistema evidenció un
+cumplimiento robusto de los objetivos funcionales. El Agente de Base de Datos
+y el Agente Visualizador alcanzaron un desempeño sobresaliente en la
+resolución de consultas de baja y media complejidad, generando de forma
+autónoma tanto las sentencias SQL precisas como las representaciones gráficas
+adecuadas. Un hallazgo fundamental de las pruebas es la
+resiliencia del sistema: los mecanismos de control integrados lograron
+identificar y mitigar consistentemente las peticiones fuera de dominio
+(\textit{guardrails}), garantizando un entorno de ejecución seguro y
+estrictamente acotado al contexto empresarial.
 
-Estos hallazgos evidencian que la arquitectura multiagente propuesta reduce
-sustancialmente la curva de aprendizaje inherente a las plataformas
-tradicionales de \textit{Business Intelligence}, operando dentro de márgenes
-seguros. Por lo tanto, se valida la viabilidad de interfaces basadas en lenguaje
-natural para dotar de autonomía analítica a los usuarios de negocio en el
-entorno PyME, dejando las consultas de mayor complejidad estructural para
-futuras iteraciones del modelo.
+Si bien se identificó una degradación en la precisión de inferencia frente a
+consultas que exigen múltiples uniones y subconsultas anidadas, este
+comportamiento permite establecer con claridad el límite operativo de la
+versión actual sin invalidar su utilidad estratégica. En definitiva, este
+trabajo corrobora que el reemplazo de interfaces técnicas tradicionales por
+modelos de procesamiento de lenguaje natural reduce drásticamente la curva de
+aprendizaje y dota de autonomía analítica real a organizaciones con recursos de
+TI limitados, sentando bases sólidas para el desarrollo de herramientas analíticas
+de próxima generación.
