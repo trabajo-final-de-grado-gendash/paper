@@ -63,21 +63,21 @@
   Se implementa un sistema multiagente capaz de transformar consultas en
   lenguaje natural en sentencias SQL y generar visualizaciones interactivas
   mediante la librería Plotly. La validación de la arquitectura se realiza
-  sobre la base de datos relacional Chinook, aplicando una metodología de
+  sobre una base de datos relacional, aplicando una metodología de
   evaluación \textit{LLM-as-a-Judge} sobre un conjunto de prueba de 50
   consultas categorizadas por dificultad, incluyendo casos fuera de dominio.
 
-  Los resultados empíricos demuestran un cumplimiento parcial y altamente
-  satisfactorio del objetivo propuesto: el sistema exhibe una elevada
-  precisión en la resolución de consultas de complejidad baja y media, y
-  demuestra robustez al rechazar de forma segura peticiones ajenas al
-  contexto analítico.
+  Los resultados empíricos demuestran un cumplimiento robusto de los objetivos
+  funcionales: el sistema exhibe un desempeño sobresaliente en la resolución
+  de consultas de complejidad baja y media, y demuestra una alta resiliencia
+  al mitigar consistentemente peticiones ajenas al contexto analítico.
 
-  Aunque se observa una degradación controlada del rendimiento ante
-  consultas que requieren uniones (\textit{JOINs}) complejas, la herramienta
-  reduce drásticamente la curva de aprendizaje operativo. Se concluye que
-  BIGENIA valida la viabilidad de las interfaces basadas en lenguaje natural
-  para dotar de autonomía analítica a los usuarios de negocio.
+  Si bien se identifica una degradación en la precisión ante consultas que
+  requieren múltiples uniones (\textit{JOINs}), este comportamiento establece
+  con claridad el límite operativo de la versión actual sin afectar su utilidad
+  estratégica. Se concluye que BIGENIA corrobora la viabilidad de las
+  interfaces basadas en lenguaje natural para dotar de autonomía analítica
+  real a los usuarios de negocio.
 \end{abstract}
 
 \vspace{0.5em}
