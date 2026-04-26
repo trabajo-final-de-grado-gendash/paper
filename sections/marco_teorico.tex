@@ -1,7 +1,177 @@
 \Needspace{20\baselineskip}
 \section{Marco Teórico}
-\subsection{Conversion de texto a lenguaje SQL}
-% ...
 
-\subsection{Generacion de tableros de datos}
-% ...
+\subsection{Arquitectura de datos moderna y capas semánticas}
+
+La implementación de sistemas de Inteligencia de Negocios Generativa (GenBI)
+necesita separar la información de las operaciones diarias de aquella usada
+para el análisis. Las bases de datos transaccionales, diseñadas para el
+registro rápido y seguro de datos crudos, no contienen la lógica del negocio.
+Conectar modelos de lenguaje directamente a estas bases de datos aumenta el
+riesgo de generar métricas incorrectas o respuestas inventadas, ya que la
+Inteligencia Artificial desconoce las reglas propias de la organización
+\citep{negash2004fundamentos}. Investigaciones recientes señalan que la
+complejidad de las tablas, los nombres poco claros de las columnas y la falta
+de contexto son las principales causas de error en los sistemas actuales que
+traducen texto a SQL \citep{rissaki2024agentic}.
+
+Para solucionar este problema, la arquitectura de datos moderna utiliza
+almacenes analíticos y construye una capa semántica, que funciona como un
+puente de comunicación. Esta capa se encarga de traducir la complejidad
+técnica de las tablas y sus relaciones en conceptos de negocio claros y
+estandarizados. Estudios actuales sugieren automatizar la creación de esta
+capa utilizando sistemas multi-agente. En este esquema, los modelos de
+lenguaje organizan la información relacional en estructuras mucho más
+fáciles de comprender, logrando una alta precisión al integrar los datos
+de la empresa \citep{guerbas2025multiagent}.
+
+Dentro del análisis de datos, la capa semántica proporciona a la Inteligencia
+Artificial un entorno de trabajo seguro y controlado. En lugar de requerir que
+el modelo deduzca cómo relacionar múltiples tablas en bases de datos complejas,
+el agente interactúa únicamente con información validada y simplificada
+\citep{rissaki2024agentic}. Recientemente, este enfoque se ha integrado en
+sistemas que emplean modelos de lenguaje para procesar consultas. En estos
+casos, la capa semántica permite interpretar con mayor claridad la intención
+del usuario antes de generar el código. Esto asegura la obtención de
+resultados confiables y estrictamente alineados con las reglas de la
+organización \citep{tursio2026deepcontext}.
+
+\subsection{Conversión de texto a lenguaje SQL}
+
+La conversión de texto a lenguaje estructurado (Text-to-SQL) es una herramienta
+clave para facilitar el acceso a la información en las empresas. Permite que
+usuarios sin conocimientos de programación puedan consultar bases de datos
+relacionales utilizando lenguaje natural. Este proceso analiza la estructura y
+el significado de las preguntas para entender qué datos se están solicitando
+\citep{luo2024nl2sql}. Sin embargo, el principal desafío técnico es resolver la
+ambigüedad de las palabras y entender exactamente qué quiere el usuario,
+especialmente cuando las bases de datos tienen nombres o estructuras poco
+descriptivas \citep{srivastava2026comparative}.
+
+Para mejorar su funcionamiento, los sistemas actuales utilizan técnicas de
+vinculación de esquemas (\textit{Schema Linking}). Este método identifica las
+entidades mencionadas en la pregunta del usuario y las asocia correctamente con
+las tablas y columnas de la base de datos, reduciendo las confusiones
+\citep{qin2024gensql}. Estudios recientes sugieren el uso de redes y análisis
+de atención para mejorar esta conexión. Esto ayuda a que el modelo comprenda
+cómo se relacionan los datos entre sí antes de empezar a escribir el código SQL
+\citep{gladkykh2025datrics}.
+
+Cuando las consultas se vuelven más complejas, los sistemas modernos recurren a
+estrategias de razonamiento paso a paso. En lugar de generar todo el código de
+una sola vez, los modelos dividen la pregunta en problemas más pequeños y
+validan cada paso antes de dar la respuesta final \citep{shuai2025deepvis}.
+Esta estrategia, sumada al uso de modelos entrenados específicamente para
+programar, aumenta notablemente la precisión de los resultados en entornos
+corporativos reales que manejan grandes volúmenes de datos
+\citep{lei2024spider}.
+
+\subsection{Generación Aumentada por Recuperación (RAG)}
+
+Para superar los límites de memoria de los modelos de lenguaje y evitar que
+inventen información, se utiliza una arquitectura llamada Generación Aumentada
+por Recuperación (RAG). Esta técnica permite que la Inteligencia Artificial
+consulte documentos externos antes de generar una respuesta, reduciendo su
+dependencia exclusiva de los datos con los que fue entrenada originalmente. En
+entornos corporativos, esto es fundamental para garantizar que el modelo
+responda basándose únicamente en la información validada de la propia empresa
+\citep{arguello2025rag}.
+
+El funcionamiento interno de RAG se divide en dos fases: recuperación y
+generación. Primero, la información de la empresa se transforma en
+representaciones matemáticas llamadas vectores y se guarda en una base de datos
+especial. Cuando un usuario hace una pregunta, el sistema busca matemáticamente
+cuáles son los fragmentos de información más similares. Luego, esta información
+recuperada se le entrega al modelo de lenguaje para que tenga el contexto exacto
+antes de formular su respuesta \citep{gao2024retrieval}.
+
+En el análisis de datos, RAG se emplea para buscar dinámicamente descripciones
+de tablas o ejemplos de consultas que ya han sido resueltas por expertos. Al
+incluir estos ejemplos exitosos junto con la pregunta del usuario, el modelo
+mejora significativamente su capacidad para entender el problema y redactar el
+código correcto. Este enfoque disminuye los errores y facilita la resolución
+automática de preguntas analíticas con un alto grado de precisión
+\citep{LeveragingNLPAndRAGModelsForAutomatedBusinessIntelligenceQueryResolution}.
+
+\subsection{Sistemas Multi-Agente}
+
+El avance de la Inteligencia Artificial ha permitido pasar de modelos que
+simplemente responden preguntas a agentes autónomos. Un agente se define por su
+capacidad de mantener un objetivo, recordar conversaciones pasadas, planificar
+tareas paso a paso y utilizar herramientas externas, como ejecutar código o
+consultar bases de datos. Esta capacidad de razonar y actuar de forma
+independiente permite resolver problemas mucho más complejos que la simple
+generación de texto \citep{maddila2024agentes}.
+
+En lugar de depender de un solo agente para hacer todo el trabajo, las
+arquitecturas modernas utilizan sistemas multi-agente. En este esquema, el
+problema se divide entre varios especialistas virtuales que colaboran entre sí.
+Por ejemplo, un agente puede encargarse exclusivamente de escribir el código
+SQL, mientras que otro actúa como revisor para detectar errores sintácticos
+antes de ejecutar la consulta. Esta división del trabajo imita el flujo de
+desarrollo de un equipo humano y aumenta notablemente la calidad del resultado
+final \citep{wang2024macsql}.
+
+En el contexto de la Inteligencia de Negocios, la orquestación de múltiples
+agentes representa un pilar para la automatización segura. Al distribuir la
+responsabilidad, los sistemas pueden enfrentar de manera colaborativa los
+desafíos de interactuar con bases de datos empresariales. Esta supervisión
+cruzada reduce los errores del modelo y asegura que las decisiones analíticas
+se basen en datos precisos y correctamente procesados
+\citep{gartner2025predicciones}.
+
+\subsection{Generación automática de visualizaciones}
+
+En la Inteligencia de Negocios, la representación gráfica de los datos es el
+paso final indispensable tras realizar una consulta. La investigación actual
+busca que los modelos de lenguaje no solo devuelvan tablas con números, sino
+que traduzcan las peticiones del usuario directamente en visualizaciones de
+datos. El objetivo es que personas sin conocimientos técnicos puedan crear y
+consumir gráficos interactivos simplemente describiendo lo que necesitan ver
+\citep{perez2026ia}.
+
+Para lograr que la Inteligencia Artificial diseñe gráficos precisos, se utilizan
+metodologías que obligan al modelo a razonar su proceso creativo. Antes de
+escribir el código de visualización, el sistema planifica lógicamente qué tipo
+de gráfico es el más adecuado para los datos obtenidos, qué variables irán en
+cada eje y qué paleta de colores utilizar. Este razonamiento paso a paso mejora
+la relación entre la pregunta original y el diseño final
+\citep{shuai2025deepvis}.
+
+A pesar de estos avances, los sistemas actuales suelen utilizar herramientas de
+código ligeras para generar los tableros, lo que facilita el desarrollo pero
+introduce nuevas limitaciones
+\citep{shi2026nl2dashboardlightweightcontrollableframework}. Problemas como
+escalas incorrectas en los ejes o la falta de opciones avanzadas de
+interactividad son comunes. Por lo tanto, mejorar la fidelidad gráfica y lograr
+que estos tableros compitan con las herramientas tradicionales sigue siendo un
+área que requiere mayor investigación \citep{perez2026ia}.
+
+\subsection{Evaluación y modelos como jueces (LLM-as-a-Judge)}
+
+Evaluar la calidad de un sistema de Inteligencia de Negocios Generativa (GenBI)
+es una tarea sumamente compleja, ya que el proceso abarca desde la extracción de
+datos hasta el diseño visual. Tradicionalmente, la evaluación se limitaba a la
+etapa de generación de consultas (Text-to-SQL), midiendo si el código escrito
+por el modelo era idéntico a una respuesta esperada. Como esta métrica resultó
+demasiado rígida, la industria migró hacia medir la precisión de ejecución
+(\textit{Execution Accuracy}), verificando únicamente si los datos devueltos
+son correctos \citep{lei2024spider}. No obstante, cuando el sistema también
+genera tableros y gráficos, estas métricas matemáticas se vuelven insuficientes.
+
+Dado que es imposible revisar manualmente miles de resultados que combinan
+código SQL, estructuras de datos y representaciones visuales, ha cobrado fuerza
+la estrategia de utilizar modelos de lenguaje como jueces automatizados
+(\textit{LLM-as-a-Judge}). En este enfoque, se emplea un modelo avanzado para
+leer la pregunta original del usuario y evaluar semánticamente si todo el flujo
+tiene sentido. El modelo actúa como un auditor humano, verificando que el
+razonamiento detrás de la respuesta sea lógicamente válido y útil para el
+negocio \citep{Jaisinghani2024}.
+
+Esta metodología de evaluación resulta indispensable para auditar ciclos
+analíticos de principio a fin. Al utilizar un modelo como juez, el sistema
+puede calificar de manera integral tanto la exactitud de los datos extraídos
+como la coherencia de la explicación textual y la claridad del gráfico generado.
+Contar con este nivel de evaluación flexible permite realizar análisis
+comparativos sólidos entre diferentes arquitecturas, garantizando que el tablero
+final cumpla con los estándares de calidad corporativos \citep{Jaisinghani2024}.
