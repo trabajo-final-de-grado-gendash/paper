@@ -1,2 +1,114 @@
-\section{Estado del arte}
-% ...
+\Needspace{20\baselineskip}
+\section{Estado del Arte}
+
+\subsection{Avances y limitaciones recientes en Text-to-SQL}
+
+La literatura reciente destaca una evolución significativa en la tarea de
+Text-to-SQL, impulsada por nuevos marcos de trabajo que mejoran la alineación
+entre la intención del usuario y el esquema de la base de datos
+\citep{qin2024gensql}. Estos avances se apoyan en la capacidad de los grandes
+modelos de lenguaje para procesar semántica compleja, superando ampliamente a
+los enfoques tradicionales basados en reglas heurísticas o análisis
+sintáctico superficial \citep{luo2024nl2sql}.
+
+En términos metodológicos, arquitecturas recientes como Gen-SQL proponen
+mecanismos eficientes para acortar la brecha entre el lenguaje natural y la
+base de datos, optimizando la identificación de tablas y columnas relevantes
+previo a la generación del código \citep{qin2024gensql}. De manera
+complementaria, marcos de trabajo industriales integran procesos estandarizados
+que buscan garantizar la consistencia sintáctica y semántica de las consultas
+generadas, un factor crítico para su adopción en ecosistemas de datos
+productivos \citep{gladkykh2025datrics}.
+
+A pesar de este progreso empírico, la resolución de consultas analíticas que
+involucran múltiples cruces (\textit{joins}), subconsultas anidadas y
+operaciones matemáticas sigue siendo un problema abierto \citep{luo2024nl2sql}.
+La introducción de entornos de evaluación rigurosos, como el \textit{benchmark}
+Spider 2.0, expone estas vulnerabilidades al someter a los modelos a tareas
+realistas y altamente desafiantes. Los resultados de estas pruebas demuestran
+que la precisión de ejecución (\textit{Execution Accuracy}) cae drásticamente
+en esquemas masivos, lo que subraya la necesidad de integrar mecanismos de
+validación externa, como la orquestación de agentes, para asegurar la fiabilidad
+operativa \citep{lei2024spider}.
+
+\subsection{Despliegue de RAG y agentes en entornos corporativos}
+
+El paso de entornos controlados de laboratorio a implementaciones productivas
+representa uno de los focos principales de la investigación actual en
+Inteligencia de Negocios. Para que los modelos generativos sean viables
+corporativamente, la literatura subraya la necesidad de acoplar técnicas
+de recuperación de contexto que limiten el conocimiento a dominios
+específicos y mitiguen las alucinaciones \citep{bourdin2024modelos}.
+
+Estudios empíricos recientes documentan la efectividad de la Generación
+Aumentada por Recuperación (RAG) en escenarios de alta criticidad. Por ejemplo,
+la implementación de estas arquitecturas en instituciones financieras ha
+demostrado mejoras sustanciales en la gestión eficiente de \textit{insights},
+permitiendo consultas seguras sobre repositorios documentales y esquemas
+de bases de datos sin exponer la privacidad de la información
+\citep{arguello2025rag}.
+
+Sin embargo, el despliegue de sistemas orquestados por agentes de IA enfrenta
+obstáculos operativos significativos, especialmente en PyMEs y ecosistemas
+de la Industria 4.0 \citep{bourdin2024modelos}. Las investigaciones
+advierten que las barreras de infraestructura, la falta de gobernanza de datos
+y la complejidad de gestionar múltiples agentes autónomos dificultan la
+estabilidad del sistema \citep{maddila2024agentes}. Esto evidencia que el
+desafío actual no radica únicamente en la generación de la respuesta, sino
+en la arquitectura de despliegue que sostiene al agente interactuando
+con el entorno empresarial.
+
+\subsection{Fronteras en la visualización automatizada de datos}
+
+En el dominio de la representación gráfica, los enfoques más vanguardistas
+aprovechan la capacidad de los grandes modelos de lenguaje para ir más allá de
+la consulta tabular y traducir comandos en lenguaje natural directamente hacia
+visualizaciones. El objetivo principal de estos esfuerzos es automatizar el
+ciclo final del Business Intelligence, permitiendo a usuarios no técnicos
+consumir información en formatos gráficos de manera interactiva
+\citep{perez2026ia}.
+
+Para lograr una traducción efectiva entre el lenguaje natural y las gramáticas
+de visualización, la investigación actual emplea metodologías de razonamiento
+escalonado (\textit{Chain-of-Thought}). Frameworks como DeepVIS demuestran
+que obligar al modelo a planificar lógicamente el tipo de gráfico, los ejes
+y las agregaciones antes de generar el código reduce drásticamente la
+brecha semántica y mejora la precisión del diseño \citep{shuai2025deepvis}.
+Paralelamente, surge una fuerte tendencia hacia la creación de arquitecturas
+ligeras, diseñadas específicamente para generar tableros completos sin la
+sobrecarga de herramientas de BI tradicionales
+\citep{shi2026nl2dashboardlightweightcontrollableframework}.
+
+No obstante, la literatura advierte que la utilidad real de estos sistemas
+aún está en fase de maduración. Las alucinaciones en la escala de los ejes,
+la selección incorrecta de paletas de colores y la falta de interactividad
+avanzada son problemas recurrentes. Además, la fidelidad gráfica comparativa
+sigue siendo un obstáculo crítico, limitando la confianza del usuario final
+en las interfaces generadas íntegramente por Inteligencia Artificial
+\citep{perez2026ia}.
+
+\subsection{Desafíos abiertos en la evaluación comparativa}
+
+A pesar de los rápidos avances en la generación de código y visualizaciones,
+la evaluación de sistemas de Inteligencia de Negocios Generativa (GenBI)
+constituye uno de los mayores cuellos de botella metodológicos. Las
+aproximaciones clásicas, basadas en métricas deterministas, resultan
+insuficientes para capturar los matices del razonamiento analítico, ya que
+una respuesta válida en BI puede presentarse con múltiples variaciones
+estructurales y visuales \citep{perez2026ia}.
+
+Para abordar este problema, investigaciones publicadas entre 2024 y 2026
+enfatizan la necesidad de ejecutar análisis comparativos exhaustivos sobre
+el rendimiento de distintos modelos fundacionales, evaluando su capacidad
+para operar dentro de flujos de trabajo analíticos reales \citep{Jaisinghani2024}.
+En este contexto, el uso de LLMs como jueces automatizados se postula
+como la técnica más prometedora para evaluar semánticamente tanto el código
+SQL generado como la calidad y coherencia de las representaciones gráficas.
+
+A pesar de estos esfuerzos, la carencia de marcos de evaluación integrales
+que auditen el ciclo de vida completo de los datos —desde la recuperación
+del esquema y la orquestación multi-agente, hasta el diseño final del
+tablero— representa una brecha crítica en el estado del arte. Esta limitación
+documentada subraya la relevancia de proponer nuevas arquitecturas
+supervisadas que garanticen la trazabilidad y la corrección técnica en
+entornos analíticos generativos.
