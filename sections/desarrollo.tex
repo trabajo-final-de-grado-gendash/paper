@@ -1,15 +1,46 @@
 \section{Desarrollo}
 \subsection{Arquitectura de la aplicacion}
-% ...
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\columnwidth]{imagenes/diagrama_arquitectura.png}
+    \caption{Diagrama de arquitectura del sistema BIGENIA. Se detallan los 8 pasos de comunicación entre los agentes, el servidor y las bases de datos vectoriales.}
+    \label{fig:arquitectura}
+\end{figure}
+
+El sistema BIGENIA ha sido diseñado bajo un modelo de flujo de trabajo basado en agentes (\textit{Agentic Workflow}), estructurado en diferentes componentes especializados. Como se ilustra en la Figura \ref{fig:arquitectura}, la comunicación entre las capas y los agentes sigue un proceso ordenado de 8 pasos:
+
+\begin{enumerate}
+    \item \textbf{Recepción de la consulta:} El servidor frontend (interfaz web) captura la pregunta del usuario en lenguaje natural y envía la petición HTTP al servidor backend (API REST).
+    
+    \item \textbf{Caché Semántico (\textit{query\_vectors}):} El servidor backend consulta la base de datos vectorial (\texttt{pgvector query\_vectors}) para comprobar si existe una pregunta semánticamente idéntica que ya haya sido procesada. Si ocurre un \textit{cache hit}, se reutiliza la consulta SQL asociada, ahorrando tiempo de procesamiento.
+    
+    \item \textbf{Delegación al Orquestador:} Si la consulta es nueva (\textit{cache miss}), la API transfiere la responsabilidad lógica al \textbf{Agente Decisor}, el componente central encargado de dirigir el flujo de trabajo.
+    
+    \item \textbf{Extracción de Contexto (\textit{schema\_documentation}):} El Agente Decisor consulta la segunda base de datos vectorial (\texttt{pgvector schema\_documentation}) para obtener los metadatos relevantes del esquema relacional (DDLs, documentación de tablas y reglas de negocio) que servirán de contexto.
+    
+    \item \textbf{Interacción con Text2SQL:} El Agente Decisor envía el contexto recuperado y la pregunta original al \textbf{Agente Text2SQL} (potenciado por Vanna AI) para que el Modelo de Lenguaje Grande formule la sentencia SQL correcta.
+    
+    \item \textbf{Decisión de Visualización (Agente Viz):} En paralelo o subsecuentemente, el Agente Decisor provee la estructura de los datos obtenidos al \textbf{Agente Viz}, quien decide la forma óptima de representarlos visualmente y genera el código JSON de configuración para Plotly.
+    
+    \item \textbf{Retorno de Resultados:} Una vez procesado, se transfiere la respuesta completa (incluyendo la consulta SQL, los datos y la configuración del gráfico generado) de vuelta al servidor backend, preparándola para ser enviada al cliente.
+    
+    \item \textbf{Respuesta Final:} El servidor backend envía este resultado consolidado al servidor frontend, donde la interfaz finalmente renderiza el gráfico interactivo y presenta la información al usuario.
+\end{enumerate}
+
+Esta arquitectura desacoplada permite que cada agente y componente de la base de datos asuma un rol altamente especializado, facilitando el mantenimiento y permitiendo futuras actualizaciones tecnológicas (como el reemplazo del modelo LLM) sin comprometer la integridad del flujo de datos completo.
 
 \subsection{Agente Decisor}
-% ...
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
 
 \subsection{Agente visualizador}
-% ...
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus.
+
 
 \subsection{Agente de base de datos}
-% ...
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget, auctor vitae massa. Fusce luctus vestibulum augue ut aliquet. Nunc sagittis dictum nisi, sed ullamcorper ipsum dignissim ac. In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui eget tellus gravida venenatis.
+
 
 \subsection{Interfaz de usuario}
 
