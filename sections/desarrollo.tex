@@ -30,6 +30,8 @@ El sistema BIGENIA ha sido diseñado bajo un modelo de flujo de trabajo basado e
 
 Esta arquitectura desacoplada permite que cada agente y componente de la base de datos asuma un rol altamente especializado, facilitando el mantenimiento y permitiendo futuras actualizaciones tecnológicas (como el reemplazo del modelo LLM) sin comprometer la integridad del flujo de datos completo.
 
+Adicionalmente, se ha integrado \textbf{LangSmith} en el flujo de trabajo como plataforma de observabilidad para los modelos de lenguaje subyacentes. Esta herramienta resulta fundamental para monitorear, rastrear y depurar las ejecuciones de los agentes en tiempo real. Gracias a LangSmith, es posible analizar el rendimiento de los \textit{prompts}, medir los tiempos de latencia, auditar el consumo de tokens y detectar anomalías o alucinaciones durante la generación de sentencias SQL y gráficos, garantizando así la calidad y confiabilidad continua de las respuestas de BIGENIA.
+
 \subsection{Agente Decisor}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
