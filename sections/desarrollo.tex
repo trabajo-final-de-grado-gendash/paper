@@ -1,54 +1,349 @@
 \section{Desarrollo}
 \subsection{Arquitectura de la aplicacion}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{imagenes/diagrama_arquitectura.png}
     \caption{Diagrama de arquitectura del sistema BIGENIA. Se detallan los 8 pasos de comunicación entre los agentes, el servidor y las bases de datos vectoriales.}
     \label{fig:arquitectura}
 \end{figure}
 
-El sistema BIGENIA ha sido diseñado bajo un modelo de flujo de trabajo basado en agentes (\textit{Agentic Workflow}), estructurado en diferentes componentes especializados. Como se ilustra en la Figura \ref{fig:arquitectura}, la comunicación entre las capas y los agentes sigue un proceso ordenado de 8 pasos:
+El sistema BIGENIA ha sido diseñado bajo un modelo de flujo de trabajo basado
+en agentes (\textit{Agentic Workflow}), estructurado en diferentes componentes
+especializados. Como se ilustra en la Figura \ref{fig:arquitectura}, la
+comunicación entre las capas y los agentes sigue un proceso ordenado de 8
+pasos:
 
 \begin{enumerate}
-    \item \textbf{Recepción de la consulta:} El servidor frontend (interfaz web) captura la pregunta del usuario en lenguaje natural y envía la petición HTTP al servidor backend (API REST).
-    
-    \item \textbf{Caché Semántico (\textit{query\_vectors}):} El servidor backend consulta la base de datos vectorial (\texttt{pgvector query\_vectors}) para comprobar si existe una pregunta semánticamente idéntica que ya haya sido procesada. Si ocurre un \textit{cache hit}, se reutiliza la consulta SQL asociada, ahorrando tiempo de procesamiento.
-    
-    \item \textbf{Delegación al Orquestador:} Si la consulta es nueva (\textit{cache miss}), la API transfiere la responsabilidad lógica al \textbf{Agente Decisor}, el componente central encargado de dirigir el flujo de trabajo.
-    
-    \item \textbf{Extracción de Contexto (\textit{schema\_documentation}):} El Agente Decisor consulta la segunda base de datos vectorial (\texttt{pgvector schema\_documentation}) para obtener los metadatos relevantes del esquema relacional (DDLs, documentación de tablas y reglas de negocio) que servirán de contexto.
-    
-    \item \textbf{Interacción con Text2SQL:} El Agente Decisor envía el contexto recuperado y la pregunta original al \textbf{Agente Text2SQL} (potenciado por Vanna AI) para que el Modelo de Lenguaje Grande formule la sentencia SQL correcta.
-    
-    \item \textbf{Decisión de Visualización (Agente Viz):} En paralelo o subsecuentemente, el Agente Decisor provee la estructura de los datos obtenidos al \textbf{Agente Viz}, quien decide la forma óptima de representarlos visualmente y genera el código JSON de configuración para Plotly.
-    
-    \item \textbf{Retorno de Resultados:} Una vez procesado, se transfiere la respuesta completa (incluyendo la consulta SQL, los datos y la configuración del gráfico generado) de vuelta al servidor backend, preparándola para ser enviada al cliente.
-    
-    \item \textbf{Respuesta Final:} El servidor backend envía este resultado consolidado al servidor frontend, donde la interfaz finalmente renderiza el gráfico interactivo y presenta la información al usuario.
+    \item \textbf{Recepción de la consulta:} El servidor frontend (interfaz web)
+          captura la pregunta del usuario en lenguaje natural y envía la petición HTTP
+          al servidor backend (API REST).
+
+    \item \textbf{Caché Semántico (\textit{query\_vectors}):} El servidor backend
+          consulta la base de datos vectorial (\texttt{pgvector query\_vectors}) para
+          comprobar si existe una pregunta semánticamente idéntica que ya haya sido
+          procesada. Si ocurre un \textit{cache hit}, se reutiliza la consulta SQL
+          asociada, ahorrando tiempo de procesamiento.
+
+    \item \textbf{Delegación al Orquestador:} Si la consulta es nueva
+          (\textit{cache miss}), la API transfiere la responsabilidad lógica al
+          \textbf{Agente Decisor}, el componente central encargado de dirigir el flujo
+          de trabajo.
+
+    \item \textbf{Extracción de Contexto (\textit{schema\_documentation}):} El
+          Agente Decisor consulta la segunda base de datos vectorial (\texttt{pgvector
+              schema\_documentation}) para obtener los metadatos relevantes del esquema
+          relacional (DDLs, documentación de tablas y reglas de negocio) que servirán de
+          contexto.
+
+    \item \textbf{Interacción con Text2SQL:} El Agente Decisor envía el contexto
+          recuperado y la pregunta original al \textbf{Agente Text2SQL} (potenciado por
+          Vanna AI) para que el Modelo de Lenguaje Grande formule la sentencia SQL
+          correcta.
+
+    \item \textbf{Decisión de Visualización (Agente Viz):} En paralelo o
+          subsecuentemente, el Agente Decisor provee la estructura de los datos
+          obtenidos al \textbf{Agente Viz}, quien decide la forma óptima de
+          representarlos visualmente y genera el código JSON de configuración para
+          Plotly.
+
+    \item \textbf{Retorno de Resultados:} Una vez procesado, se transfiere la
+          respuesta completa (incluyendo la consulta SQL, los datos y la configuración
+          del gráfico generado) de vuelta al servidor backend, preparándola para ser
+          enviada al cliente.
+
+    \item \textbf{Respuesta Final:} El servidor backend envía este resultado
+          consolidado al servidor frontend, donde la interfaz finalmente renderiza el
+          gráfico interactivo y presenta la información al usuario.
 \end{enumerate}
 
-Esta arquitectura desacoplada permite que cada agente y componente de la base de datos asuma un rol altamente especializado, facilitando el mantenimiento y permitiendo futuras actualizaciones tecnológicas (como el reemplazo del modelo LLM) sin comprometer la integridad del flujo de datos completo.
+Esta arquitectura desacoplada permite que cada agente y componente de la base
+de datos asuma un rol altamente especializado, facilitando el mantenimiento y
+permitiendo futuras actualizaciones tecnológicas (como el reemplazo del modelo
+LLM) sin comprometer la integridad del flujo de datos completo.
 
-Adicionalmente, se ha integrado \textbf{LangSmith} en el flujo de trabajo como plataforma de observabilidad para los modelos de lenguaje subyacentes. Esta herramienta resulta fundamental para monitorear, rastrear y depurar las ejecuciones de los agentes en tiempo real. Gracias a LangSmith, es posible analizar el rendimiento de los \textit{prompts}, medir los tiempos de latencia, auditar el consumo de tokens y detectar anomalías o alucinaciones durante la generación de sentencias SQL y gráficos, garantizando así la calidad y confiabilidad continua de las respuestas de BIGENIA.
+Adicionalmente, se ha integrado \textbf{LangSmith} en el flujo de trabajo como
+plataforma de observabilidad para los modelos de lenguaje subyacentes. Esta
+herramienta resulta fundamental para monitorear, rastrear y depurar las
+ejecuciones de los agentes en tiempo real. Gracias a LangSmith, es posible
+analizar el rendimiento de los \textit{prompts}, medir los tiempos de
+latencia, auditar el consumo de tokens y detectar anomalías o alucinaciones
+durante la generación de sentencias SQL y gráficos, garantizando así la
+calidad y confiabilidad continua de las respuestas de BIGENIA.
 
 \subsection{Agente Decisor}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+El Agente Decisor constituye el punto de entrada y orquestador central del
+pipeline de BIGenIA. Su función principal es recibir la consulta del usuario
+en lenguaje natural, junto con el historial de conversación de la sesión
+activa, y determinar la acción apropiada a ejecutar. Este componente actúa
+como director del flujo de trabajo, delegando responsabilidades a los agentes
+especializados según corresponda.
 
-\subsection{Agente visualizador}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{imagenes/agente_decisor.png}
+    \caption{Diagrama de flujo del Agente Decisor. Según la clasificación de intención, el agente enruta la consulta hacia el pipeline de datos, solicita clarificación o emite un mensaje directo.}
+    \label{fig:agente_decisor}
+\end{figure}
 
+\subsubsection{Clasificación de intención}
 
-\subsection{Agente de base de datos}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget, auctor vitae massa. Fusce luctus vestibulum augue ut aliquet. Nunc sagittis dictum nisi, sed ullamcorper ipsum dignissim ac. In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui eget tellus gravida venenatis.
+El mecanismo central del Agente Decisor es un clasificador de intención que
+utiliza Gemini con salida estructurada (\textit{structured output}). Esto
+garantiza que la respuesta del modelo se ajuste a un esquema predefinido,
+eliminando la necesidad de parseo manual de texto libre y reduciendo errores
+de interpretación.
 
+El clasificador analiza la consulta del usuario junto con el contexto
+conversacional y la asigna a exactamente una de cuatro categorías posibles:
 
+\begin{itemize}
+    \item \textbf{Consulta válida y clara}: La solicitud es suficientemente
+          específica como para ser traducida a una sentencia SQL sin ambigüedades. El
+          agente continúa con el pipeline completo: generación de SQL, ejecución sobre
+          la base de datos y generación de la visualización correspondiente.
+
+    \item \textbf{Consulta válida pero ambigua}: La solicitud está relacionada con
+          el dominio de datos, pero carece de la especificidad necesaria para construir
+          una consulta precisa. El agente genera una pregunta de clarificación y la
+          devuelve al usuario. Para evitar ciclos infinitos de clarificación, el sistema
+          implementa una guardia que permite un máximo de una pregunta de clarificación
+          consecutiva; si el usuario ya recibió una clarificación en el turno anterior,
+          el agente asume la interpretación más probable y avanza con el pipeline.
+
+    \item \textbf{Fuera de alcance}: La consulta no guarda relación con el dominio
+          de datos disponible, o solicita operaciones destructivas sobre la base de
+          datos. El agente responde con un mensaje informativo indicando que la
+          solicitud excede las capacidades del sistema.
+
+    \item \textbf{Conversacional}: La entrada corresponde a saludos, despedidas,
+          agradecimientos u otros comentarios de cortesía que no requieren procesamiento
+          analítico. El agente responde con un mensaje apropiado.
+\end{itemize}
+
+\subsubsection{Resolución contextual de consultas}
+
+Cuando la consulta del usuario es clasificada como válida pero depende del
+historial de conversación para ser interpretada correctamente (por ejemplo,
+``lo mismo pero agrupado por mes'' o ``ahora filtralo por Argentina''), el
+clasificador genera una consulta auto-contenida que reemplaza a la original.
+Esta consulta reformulada incorpora toda la información necesaria del contexto
+previo, permitiendo que las etapas posteriores del pipeline operen de forma
+independiente, sin necesidad de acceder al historial conversacional.
+
+\subsubsection{Tipos de respuesta}
+
+El Agente Decisor produce uno de cuatro tipos de respuesta, dependiendo de la
+categoría de intención detectada y del resultado del procesamiento:
+
+\begin{itemize}
+    \item \textbf{Visualización}: Incluye la sentencia SQL generada, los datos
+          resultantes y la configuración del gráfico interactivo. Se emite cuando el
+          pipeline completo se ejecuta exitosamente.
+    \item \textbf{Clarificación}: Contiene una pregunta dirigida al usuario para
+          refinar su solicitud. Se emite para consultas ambiguas.
+    \item \textbf{Mensaje}: Respuesta textual informativa. Se emite para consultas
+          fuera de alcance, conversacionales, o cuando la consulta SQL se ejecutó
+          correctamente pero no arrojó resultados.
+    \item \textbf{Error}: Información sobre una falla en el pipeline. Se emite
+          cuando alguna etapa del procesamiento falla de manera irrecuperable.
+\end{itemize}
+
+Adicionalmente, cuando el caché semántico del sistema detecta una consulta
+previamente procesada (\textit{cache hit}), el Agente Decisor omite las etapas
+de clasificación y generación de SQL, ejecutando directamente la sentencia
+almacenada. Esto reduce significativamente el tiempo de respuesta y el consumo
+de recursos del modelo de lenguaje.
+
+\FloatBarrier
+\subsection{Agente de Text2SQL}
+
+El Agente de Text2SQL es el componente responsable de la traducción de
+consultas en lenguaje natural a sentencias SQL ejecutables, comúnmente
+denominado \textit{Text-to-SQL}. Este agente utiliza Vanna AI como framework
+de generación y Gemini como modelo de lenguaje, operando sobre una base de
+datos PostgreSQL.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{imagenes/agente_text2sql.png}
+    \caption{Ciclo de generación y reintento del Agente de Text2SQL. La sentencia SQL generada se valida y ejecuta; en caso de fallo, se construye un prompt de refinamiento para una segunda invocación del modelo.}
+    \label{fig:agente_bd}
+\end{figure}
+
+\subsubsection{Inyección de contexto semántico}
+
+Antes de invocar al modelo de lenguaje para la generación de SQL, el sistema
+emplea un patrón de \textit{Retrieval-Augmented Generation} (RAG) para
+enriquecer el prompt con información contextual relevante del esquema
+relacional.
+
+El proceso consiste en generar un \textit{embedding} vectorial de la consulta
+del usuario mediante un modelo de embeddings dedicado y buscar, por distancia
+de coseno en la base de datos vectorial \texttt{schema\_documentation}, los
+documentos de esquema semánticamente más relevantes. Estos documentos
+contienen descripciones enriquecidas de tablas y columnas que fueron
+previamente generadas de forma automática mediante un proceso de documentación
+semántica del esquema.
+
+Los documentos recuperados se inyectan directamente en el prompt del modelo,
+proporcionando al LLM un contexto preciso sobre la estructura y semántica de
+los datos disponibles. Esta estrategia reduce significativamente las
+alucinaciones del modelo, mejorando la selección de tablas y columnas
+apropiadas y la construcción de sentencias SQL sintácticamente correctas.
+
+\subsubsection{Generación de SQL}
+
+El modelo de lenguaje recibe un prompt cuidadosamente diseñado que combina la
+consulta del usuario con el contexto semántico recuperado. Este prompt incluye
+reglas estrictas de generación:
+
+\begin{itemize}
+    \item Solo se permiten sentencias \texttt{SELECT} (operaciones de solo
+          lectura).
+    \item Se especifica el esquema y las convenciones de nomenclatura de la base
+          de datos.
+    \item Los identificadores de tablas y columnas deben respetar el formato
+          esperado por PostgreSQL.
+    \item La temperatura del modelo se configura en 0.0 para maximizar el
+          determinismo de las respuestas.
+\end{itemize}
+
+\subsubsection{Validación de seguridad}
+
+Toda sentencia SQL generada por el modelo es sometida a un proceso de
+validación de seguridad antes de su ejecución. Este validador realiza un
+análisis sintáctico de la sentencia mediante la biblioteca \texttt{sqlparse} y
+verifica que se trate exclusivamente de una operación \texttt{SELECT}.
+Adicionalmente, se realiza un escaneo lexicográfico para detectar y bloquear
+palabras clave asociadas a operaciones destructivas (\texttt{DELETE},
+\texttt{DROP}, \texttt{UPDATE}, \texttt{INSERT}, \texttt{ALTER}, entre otras).
+Si se detecta una sentencia prohibida, se interrumpe la ejecución
+inmediatamente, garantizando la integridad de los datos.
+
+\subsubsection{Mecanismo de reintento}
+
+Un aspecto clave del diseño del sistema es su capacidad de autocorrección ante
+fallos de ejecución SQL. Cuando una sentencia generada por el modelo falla al
+ejecutarse sobre la base de datos (por ejemplo, debido a un nombre de columna
+incorrecto o una sintaxis incompatible), el sistema implementa un mecanismo de
+reintento automático:
+
+\begin{enumerate}
+    \item Se captura el mensaje de error devuelto por PostgreSQL.
+    \item Se construye un prompt de refinamiento que incluye tres elementos: la
+          consulta original en lenguaje natural, la sentencia SQL que falló y el mensaje
+          de error de la base de datos.
+    \item Se realiza una segunda invocación al modelo de lenguaje con este
+          contexto de error, solicitando una versión corregida de la sentencia SQL.
+    \item La nueva sentencia se somete nuevamente al proceso de validación de
+          seguridad y ejecución.
+\end{enumerate}
+
+El sistema admite un máximo de dos intentos (el original y uno de
+corrección) gestionados de manera transparente para el usuario. Si ambos
+fallan, se reporta el error final mediante el Agente Decisor.
+
+\subsubsection{Manejo de resultados vacíos}
+
+Si la ejecución SQL es exitosa pero no devuelve registros, el Agente Decisor
+informa directamente la ausencia de datos sin invocar al Agente de
+Visualización, optimizando recursos.
+
+\FloatBarrier
+\subsection{Agente de visualización}
+
+El Agente de Visualización transforma los resultados SQL y la consulta
+original en un gráfico interactivo en formato JSON compatible con Plotly.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{imagenes/agente_viz.png}
+    \caption{Pipeline de generación del Agente de Visualización. El código Plotly generado se ejecuta y valida; si falla, se solicita una corrección automática al modelo, repitiendo el ciclo hasta agotar los intentos.}
+    \label{fig:agente_viz}
+\end{figure}
+
+\subsubsection{Pipeline de generación}
+
+El proceso de generación de una visualización sigue un pipeline de cinco
+etapas secuenciales:
+
+\begin{enumerate}
+    \item \textbf{Validación de datos}: Se verifica que el conjunto de datos
+          recibido no esté vacío ni presente anomalías estructurales que impidan su
+          representación gráfica.
+
+    \item \textbf{Análisis del conjunto de datos}: Se extrae metadata detallada
+          del DataFrame, incluyendo las dimensiones, los tipos de datos de cada columna
+          (numérica, categórica, temporal), la cantidad de valores únicos, valores de
+          muestra y la presencia de valores nulos. Esta metadata permite al modelo de
+          lenguaje tomar decisiones informadas sobre la representación visual más
+          adecuada.
+
+    \item \textbf{Decisión y generación de código}: La metadata extraída junto con
+          la solicitud del usuario se envían al modelo de lenguaje (Gemini) utilizando
+          salida estructurada. El modelo selecciona el tipo de gráfico más apropiado
+          entre las opciones disponibles (barras, líneas, torta, dispersión, histograma,
+          mapa de calor y diagrama de caja) y genera código Python ejecutable utilizando
+          la biblioteca Plotly. La respuesta estructurada incluye además un razonamiento
+          que justifica la elección del tipo de gráfico.
+
+    \item \textbf{Ejecución con loop de corrección}: El código generado se ejecuta
+          en un entorno controlado para producir la figura. Si la ejecución falla (por
+          errores de sintaxis, errores en tiempo de ejecución o producción de un gráfico
+          vacío), el sistema envía automáticamente el código fallido junto con el
+          mensaje de error al modelo de lenguaje, solicitando una versión corregida.
+          Este ciclo de corrección se repite hasta un número máximo de intentos
+          configurable, permitiendo al sistema recuperarse de errores menores en la
+          generación de código.
+
+    \item \textbf{Serialización}: Una vez obtenida una figura válida, se serializa
+          a formato JSON de Plotly. Esta representación es directamente interpretable
+          por la biblioteca Plotly.js en el frontend, permitiendo el renderizado de
+          gráficos interactivos con capacidades de zoom, filtrado y exploración de
+          datos.
+\end{enumerate}
+
+\subsubsection{Razonamiento de la decisión}
+
+Cada visualización generada incluye una explicación en lenguaje natural que
+detalla por qué se seleccionó un tipo de gráfico particular dada la naturaleza
+de los datos y la solicitud del usuario. Este razonamiento se presenta al
+usuario junto con la visualización, proporcionando transparencia sobre el
+proceso de decisión del sistema y facilitando la comprensión de la
+representación elegida.
+
+\subsubsection{Edición generativa de gráficos}
+
+Una capacidad distintiva del agente es la posibilidad de modificar
+visualizaciones existentes mediante instrucciones en lenguaje natural. El
+usuario puede solicitar cambios específicos sobre un gráfico previamente
+generado, tales como la modificación de colores, la aplicación de filtros, el
+cambio de tipo de gráfico o el ajuste de títulos y etiquetas. El agente recibe
+el código fuente del gráfico original junto con la nueva instrucción y el
+historial de conversación, generando una versión modificada que preserva el
+contexto del gráfico base. El código resultante también se somete al loop de
+corrección antes de ser devuelto al usuario.
+
+\subsubsection{Salida del agente}
+
+El resultado del Agente de Visualización incluye: el gráfico serializado en
+formato JSON (listo para renderizar en el frontend), el código fuente Plotly
+que lo genera, el tipo de gráfico seleccionado, el razonamiento de la decisión
+y métricas de ejecución como la cantidad de intentos realizados y el tiempo de
+procesamiento total. Esta información completa es devuelta al Agente Decisor,
+quien la consolida en la respuesta final enviada al usuario.
+
+\FloatBarrier
 \subsection{Interfaz de usuario}
 
-La interfaz de usuario fue diseñada priorizando la simplicidad y la capacidad de respuesta inmediata. Se utilizó \textbf{React} como biblioteca principal de frontend, complementada con \textbf{Tailwind CSS} para el estilizado y \textbf{Zustand} para la gestión de estado global.
+La interfaz de usuario fue diseñada priorizando la simplicidad y la capacidad
+de respuesta inmediata. Se utilizó \textbf{React} como biblioteca principal de
+frontend, complementada con \textbf{Tailwind CSS} para el estilizado y
+\textbf{Zustand} para la gestión de estado global.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{imagenes/inicio.png}
     \caption{Pantalla de inicio de la aplicación con guía de uso.}
@@ -58,12 +353,22 @@ La interfaz de usuario fue diseñada priorizando la simplicidad y la capacidad d
 \subsubsection{Decisiones de Diseño y UX/UI}
 
 \begin{itemize}
-    \item \textbf{Estética Moderna y Minimalista}: Se implementó un diseño con bordes redondeados, utilizando una paleta de colores coherente que soporta tanto el modo claro como el modo oscuro (ver Figura \ref{fig:grafico_claro}). Esta dualidad no es solo estética, sino que mejora la accesibilidad y reduce la fatiga visual según la preferencia del usuario.
-    \item \textbf{Retroalimentación Inmediata}: Dado que la generación de gráficos mediante LLMs puede tomar varios segundos, se integraron indicadores de carga (\textit{spinners} y \textit{skeleton screens}) para mantener al usuario informado sobre el proceso en curso.
-    \item \textbf{Interactividad de los Datos}: En lugar de imágenes estáticas, los gráficos se renderizan utilizando \textbf{Plotly.js}. Esto permite que el usuario pueda hacer zoom, filtrar series de datos y ver detalles exactos al pasar el cursor sobre los elementos.
+    \item \textbf{Estética Moderna y Minimalista}: Se implementó un diseño con
+          bordes redondeados, utilizando una paleta de colores coherente que soporta
+          tanto el modo claro como el modo oscuro (ver Figura \ref{fig:grafico_claro}).
+          Esta dualidad no es solo estética, sino que mejora la accesibilidad y reduce
+          la fatiga visual según la preferencia del usuario.
+    \item \textbf{Retroalimentación Inmediata}: Dado que la generación de gráficos
+          mediante LLMs puede tomar varios segundos, se integraron indicadores de carga
+          (\textit{spinners} y \textit{skeleton screens}) para mantener al usuario
+          informado sobre el proceso en curso.
+    \item \textbf{Interactividad de los Datos}: En lugar de imágenes estáticas,
+          los gráficos se renderizan utilizando \textbf{Plotly.js}. Esto permite que el
+          usuario pueda hacer zoom, filtrar series de datos y ver detalles exactos al
+          pasar el cursor sobre los elementos.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{imagenes/grafico_claro.png}
     \caption{Visualización interactiva generada en modo claro.}
@@ -72,9 +377,13 @@ La interfaz de usuario fue diseñada priorizando la simplicidad y la capacidad d
 
 \subsubsection{Persistencia y Organización}
 
-Para facilitar el flujo de trabajo del analista, la aplicación cuenta con un historial de conversaciones y una \textbf{Galería de Gráficos} (Figura \ref{fig:galeria}). Esta galería permite acceder rápidamente a las visualizaciones más importantes sin tener que buscar en el historial del chat, separando la lógica de conversación de los activos visuales generados.
+Para facilitar el flujo de trabajo del analista, la aplicación cuenta con un
+historial de conversaciones y una \textbf{Galería de Gráficos} (Figura
+\ref{fig:galeria}). Esta galería permite acceder rápidamente a las
+visualizaciones más importantes sin tener que buscar en el historial del chat,
+separando la lógica de conversación de los activos visuales generados.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{imagenes/galeria.png}
     \caption{Galería centralizada para la gestión de activos visuales.}
@@ -83,9 +392,13 @@ Para facilitar el flujo de trabajo del analista, la aplicación cuenta con un hi
 
 \subsubsection{Edición Generativa}
 
-Una característica distintiva de la interfaz es la capacidad de modificar gráficos existentes mediante lenguaje natural. El usuario puede citar un gráfico previo y solicitar cambios específicos (ej. colores, filtros o tipos de gráfico), lo que se traduce en una experiencia de edición fluida e intuitiva (Figura \ref{fig:cambio}).
+Una característica distintiva de la interfaz es la capacidad de modificar
+gráficos existentes mediante lenguaje natural. El usuario puede citar un
+gráfico previo y solicitar cambios específicos (ej. colores, filtros o tipos
+de gráfico), lo que se traduce en una experiencia de edición fluida e
+intuitiva (Figura \ref{fig:cambio}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{imagenes/cambio.png}
     \caption{Flujo de edición generativa sobre un gráfico previo.}
