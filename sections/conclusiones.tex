@@ -9,16 +9,16 @@ consolidando una interfaz directa y efectiva entre el usuario de negocio y la
 base de datos.
 
 A través de la metodología de evaluación \textit{LLM-as-a-Judge}, aplicada
-sobre un conjunto estructurado de 50 casos de prueba, el sistema evidenció un
-cumplimiento robusto de los objetivos funcionales. El Agente de Base de Datos
-y el Agente Visualizador alcanzaron un desempeño sobresaliente en la
-resolución de consultas de baja y media complejidad, generando de forma
-autónoma tanto las sentencias SQL precisas como las representaciones gráficas
-adecuadas. Un hallazgo fundamental de las pruebas es la
-resiliencia del sistema: los mecanismos de control integrados lograron
-identificar y mitigar consistentemente las peticiones fuera de dominio
-(\textit{guardrails}), garantizando un entorno de ejecución seguro y
-estrictamente acotado al contexto empresarial.
+sobre un conjunto estructurado de 35 casos de prueba, el sistema evidenció un
+cumplimiento robusto de los objetivos funcionales. El Agente de Intención
+demostró una precisión perfecta (100\%) en la clasificación de solicitudes,
+lo que subraya la resiliencia del sistema y la efectividad de sus mecanismos
+de control (\textit{guardrails}) para identificar y mitigar consistentemente
+las peticiones fuera de dominio. Por su parte, el Agente Visualizador logró
+un desempeño sobresaliente con una tasa de éxito del 96.9\% en la generación
+de representaciones gráficas adecuadas. El Agente de Base de Datos también
+alcanzó niveles muy altos de efectividad (92.9\%) en la generación autónoma
+de sentencias SQL precisas.
 
 Si bien se identificó una degradación en la precisión de inferencia frente a
 consultas que exigen múltiples uniones y subconsultas anidadas, este
