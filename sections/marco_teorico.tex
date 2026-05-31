@@ -3,7 +3,7 @@
 
 \subsection{Arquitectura de datos moderna y capas semánticas}
 
-La implementación de sistemas de Inteligencia de Negocios Generativa (GenBI)
+La implementación de sistemas de GenBI
 necesita separar la información de las operaciones diarias de aquella usada
 para el análisis. Las bases de datos transaccionales, diseñadas para el
 registro rápido y seguro de datos crudos, no contienen la lógica del negocio.
@@ -80,7 +80,7 @@ responda basándose únicamente en la información validada de la propia empresa
 El funcionamiento interno de RAG se divide en dos fases: recuperación y
 generación. Primero, la información de la empresa se transforma en
 representaciones matemáticas llamadas vectores y se guarda en una base de datos
-especial. Cuando un usuario hace una pregunta, el sistema busca matemáticamente
+vectorial. Cuando un usuario hace una pregunta, el sistema busca matemáticamente
 cuáles son los fragmentos de información más similares. Luego, esta información
 recuperada se le entrega al modelo de lenguaje para que tenga el contexto exacto
 antes de formular su respuesta \citep{gao2024retrieval}.
@@ -149,7 +149,7 @@ que estos tableros compitan con las herramientas tradicionales sigue siendo un
 
 \subsection{Evaluación y modelos como jueces (LLM-as-a-Judge)}
 
-Evaluar la calidad de un sistema de Inteligencia de Negocios Generativa (GenBI)
+Evaluar la calidad de un sistema de GenBI
 es una tarea sumamente compleja, ya que el proceso abarca desde la extracción de
 datos hasta el diseño visual. Tradicionalmente, la evaluación se limitaba a la
 etapa de generación de consultas (Text-to-SQL), midiendo si el código escrito

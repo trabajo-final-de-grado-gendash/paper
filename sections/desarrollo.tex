@@ -19,30 +19,28 @@ pasos:
             captura la pregunta del usuario en lenguaje natural y envía la petición HTTP
             al servidor backend (API REST).
 
-      \item \textbf{Caché Semántico (\textit{query\_vectors}):} El servidor backend
-            consulta la base de datos vectorial (\texttt{pgvector query\_vectors}) para
+      \item \textbf{Caché Semántico:} El servidor backend
+            consulta la base de datos vectorial (\texttt{query\_vectors}) para
             comprobar si existe una pregunta semánticamente idéntica que ya haya sido
-            procesada. Si ocurre un \textit{cache hit}, se reutiliza la consulta SQL
-            asociada, ahorrando tiempo de procesamiento.
+            procesada. Si ocurre una coincidencia, se reutilizan la consulta SQL y la visualización
+            asociadas, ahorrando tiempo de procesamiento.
 
       \item \textbf{Delegación al Orquestador:} Si la consulta es nueva
-            (\textit{cache miss}), la API transfiere la responsabilidad lógica al
+            , la API transfiere la responsabilidad lógica al
             \textbf{Agente Decisor}, el componente central encargado de dirigir el flujo
             de trabajo.
 
-      \item \textbf{Extracción de Contexto (\textit{schema\_documentation}):} El
-            Agente Decisor consulta la segunda base de datos vectorial (\texttt{pgvector
+      \item \textbf{Extracción de Contexto:} El
+            Agente Decisor consulta la segunda base de datos vectorial (\texttt{
                   schema\_documentation}) para obtener los metadatos relevantes del esquema
             relacional (DDLs, documentación de tablas y reglas de negocio) que servirán de
             contexto.
 
       \item \textbf{Interacción con Text2SQL:} El Agente Decisor envía el contexto
-            recuperado y la pregunta original al \textbf{Agente Text2SQL} (potenciado por
-            Vanna AI) para que el Modelo de Lenguaje Grande formule la sentencia SQL
+            recuperado y la pregunta original al \textbf{Agente Text2SQL} para que el Modelo de Lenguaje Grande formule la sentencia SQL
             correcta.
 
-      \item \textbf{Decisión de Visualización (Agente Viz):} En paralelo o
-            subsecuentemente, el Agente Decisor provee la estructura de los datos
+      \item \textbf{Decisión de Visualización (Agente Viz):} A continuación, el Agente Decisor provee la estructura de los datos
             obtenidos al \textbf{Agente Viz}, quien decide la forma óptima de
             representarlos visualmente y genera el código JSON de configuración para
             Plotly.
@@ -74,7 +72,7 @@ calidad y confiabilidad continua de las respuestas de BIGENIA.
 \subsection{Agente Decisor}
 
 El Agente Decisor constituye el punto de entrada y orquestador central del
-pipeline de BIGenIA. Su función principal es recibir la consulta del usuario
+pipeline de BIGENIA. Su función principal es recibir la consulta del usuario
 en lenguaje natural, junto con el historial de conversación de la sesión
 activa, y determinar la acción apropiada a ejecutar. Este componente actúa
 como director del flujo de trabajo, delegando responsabilidades a los agentes
@@ -150,11 +148,6 @@ categoría de intención detectada y del resultado del procesamiento:
             cuando alguna etapa del procesamiento falla de manera irrecuperable.
 \end{itemize}
 
-Adicionalmente, cuando el caché semántico del sistema detecta una consulta
-previamente procesada (\textit{cache hit}), el Agente Decisor omite las etapas
-de clasificación y generación de SQL, ejecutando directamente la sentencia
-almacenada. Esto reduce significativamente el tiempo de respuesta y el consumo
-de recursos del modelo de lenguaje.
 
 \FloatBarrier
 \subsection{Agente de Text2SQL}
@@ -206,7 +199,7 @@ reglas estrictas de generación:
             de datos.
       \item Los identificadores de tablas y columnas deben respetar el formato
             esperado por PostgreSQL.
-      \item La temperatura del modelo se configura en 0.0 para maximizar el
+      \item La temperatura del modelo se configura en 0 para maximizar el
             determinismo de las respuestas.
 \end{itemize}
 
@@ -216,7 +209,7 @@ Toda sentencia SQL generada por el modelo es sometida a un proceso de
 validación de seguridad antes de su ejecución. Este validador realiza un
 análisis sintáctico de la sentencia mediante la biblioteca \texttt{sqlparse} y
 verifica que se trate exclusivamente de una operación \texttt{SELECT}.
-Adicionalmente, se realiza un escaneo lexicográfico para detectar y bloquear
+Adicionalmente, se realiza un escaneo para detectar y bloquear
 palabras clave asociadas a operaciones destructivas (\texttt{DELETE},
 \texttt{DROP}, \texttt{UPDATE}, \texttt{INSERT}, \texttt{ALTER}, entre otras).
 Si se detecta una sentencia prohibida, se interrumpe la ejecución
@@ -284,7 +277,7 @@ etapas secuenciales:
       \item \textbf{Decisión y generación de código}: La metadata extraída junto con
             la solicitud del usuario se envían al modelo de lenguaje (Gemini) utilizando
             salida estructurada. El modelo selecciona el tipo de gráfico más apropiado
-            entre las opciones disponibles (barras, líneas, torta, dispersión, histograma,
+            entre las opciones disponibles (barras, tablas, indicador, líneas, torta, dispersión, histograma,
             mapa de calor y diagrama de caja) y genera código Python ejecutable utilizando
             la biblioteca Plotly. La respuesta estructurada incluye además un razonamiento
             que justifica la elección del tipo de gráfico.
@@ -352,6 +345,13 @@ frontend, complementada con \textbf{Tailwind CSS} para el estilizado y
 
 \subsubsection{Decisiones de Diseño y UX/UI}
 
+\begin{figure}[H]
+      \centering
+      \includegraphics[width=\columnwidth]{imagenes/grafico_claro.png}
+      \caption{Visualización interactiva generada en modo claro.}
+      \label{fig:grafico_claro}
+\end{figure}
+
 \begin{itemize}
       \item \textbf{Estética Moderna y Minimalista}: Se implementó un diseño con
             bordes redondeados, utilizando una paleta de colores coherente que soporta
@@ -368,13 +368,6 @@ frontend, complementada con \textbf{Tailwind CSS} para el estilizado y
             pasar el cursor sobre los elementos.
 \end{itemize}
 
-\begin{figure}[!ht]
-      \centering
-      \includegraphics[width=\columnwidth]{imagenes/grafico_claro.png}
-      \caption{Visualización interactiva generada en modo claro.}
-      \label{fig:grafico_claro}
-\end{figure}
-
 \subsubsection{Persistencia y Organización}
 
 Para facilitar el flujo de trabajo del analista, la aplicación cuenta con un
@@ -383,7 +376,7 @@ historial de conversaciones y una \textbf{Galería de Gráficos} (Figura
 visualizaciones más importantes sin tener que buscar en el historial del chat,
 separando la lógica de conversación de los activos visuales generados.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
       \centering
       \includegraphics[width=\columnwidth]{imagenes/galeria.png}
       \caption{Galería centralizada para la gestión de activos visuales.}
@@ -432,7 +425,7 @@ El modelo evalúa cada respuesta asignando un puntaje continuo del 1 al 5 junto 
 
 Los resultados de la ejecución sobre los 35 casos de prueba demostraron un desempeño altamente satisfactorio en todos los componentes del sistema, tal como se resume en la Tabla \ref{tab:resultados_eval}. Los puntajes continuos fueron normalizados a tasas de éxito porcentuales.
 
-\begin{table}[h]
+\begin{table}[H]
       \centering
       \begin{tabular}{lc}
             \hline
