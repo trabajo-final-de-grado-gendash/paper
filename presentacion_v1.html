@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIGENIA - Presentación de Tesis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Slide system */
+        .deck {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 6rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .slide-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        p { color: var(--muted); font-size: 1.2rem; line-height: 1.6; margin-bottom: 0.8rem; }
+
+        .subtitle { font-size: 1.4rem; color: var(--muted); margin-bottom: 2rem; }
+        .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); margin-bottom: 0.5rem; }
+
+        /* Layout helpers */
+        .center { text-align: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            border-radius: 14px;
+            padding: 1.8rem;
+        }
+
+        .card .icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .card h3 { color: var(--text); font-size: 1.1rem; }
+        .card p { font-size: 0.95rem; margin: 0; }
+
+        /* Flow steps */
+        .flow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .flow-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        .flow-item .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); min-width: 25px; }
+        .flow-item span { font-size: 0.95rem; color: var(--text); }
+
+        /* Agents */
+        .agent {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .agent .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+        .agent h3 { color: var(--text); margin-bottom: 0.5rem; }
+        .agent p { font-size: 0.9rem; margin: 0; }
+
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table th, .table td { padding: 1.2rem 1.5rem; text-align: left; }
+        .table th { background: rgba(56,189,248,0.1); color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .table td { border-top: 1px solid rgba(56,189,248,0.05); font-size: 1.05rem; }
+
+        .badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: rgba(16,185,129,0.15); color: var(--success); }
+
+        /* Check list */
+        .checklist { margin-top: 1.5rem; }
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            list-style: none;
+        }
+        .checklist li::before { content: "✓"; color: var(--success); font-size: 1.4rem; font-weight: 700; flex-shrink: 0; }
+        .checklist li p { margin: 0; }
+
+        /* Tech tags */
+        .tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+        .tag { background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2); padding: 0.4rem 0.9rem; border-radius: 8px; font-size: 0.85rem; color: var(--accent); }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.4s ease;
+            z-index: 100;
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            right: 3rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+            z-index: 100;
+        }
+
+        /* Nav hints */
+        .nav-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 3rem;
+            font-size: 0.75rem;
+            color: rgba(148,163,184,0.5);
+            z-index: 100;
+        }
+
+        /* Highlight box */
+        .highlight {
+            background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(167,139,250,0.1));
+            border: 1px solid rgba(56,189,248,0.2);
+            border-radius: 14px;
+            padding: 1.5rem 2rem;
+            margin-top: 1.5rem;
+        }
+        .highlight p { color: var(--text); margin: 0; }
+    </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="slide-counter" id="counter"></div>
+<div class="nav-hint">← → o clic para avanzar</div>
+
+<div class="deck" id="deck">
+
+    <!-- SLIDE 1: Título -->
+    <div class="slide active">
+        <div class="slide-content center">
+            <h1>BIGENIA</h1>
+            <p class="subtitle">Implementación de una Herramienta de Inteligencia de Negocios<br>basada en Lenguaje Natural para PyMEs</p>
+            <p style="font-size: 1rem; color: var(--muted);">Diseño de una arquitectura de generación dinámica de gráficos<br>para democratizar el acceso a datos.</p>
+            <div style="margin-top: 3rem;">
+                <p style="font-size: 1.1rem; color: var(--text);"><strong>Lucas J. Martinez</strong> · <strong>Nahuel A. Carro</strong></p>
+                <p style="font-size: 0.95rem;">Director: Prof. Javier D. Rabuch</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Problema -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">El Problema</p>
+            <h2>Las PyMEs no pueden acceder a sus propios datos</h2>
+            <p>A pesar de ser el motor de las economías latinoamericanas, enfrentan barreras críticas para adoptar herramientas de Business Intelligence.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="icon">💰</div>
+                    <h3>Costos Elevados</h3>
+                    <p>Plataformas de BI que exceden el presupuesto en licencias e infraestructura.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">👤</div>
+                    <h3>Sin Personal Técnico</h3>
+                    <p>Sin departamentos de TI ni analistas que dominen SQL o ciencia de datos.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🔗</div>
+                    <h3>Complejidad</h3>
+                    <p>Sistemas heredados incompatibles que generan resistencia al cambio.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Consecuencia -->
+    <div class="slide">
+        <div class="slide-content center">
+            <p class="label">Consecuencia</p>
+            <h2>Los datos quedan subutilizados</h2>
+            <p style="max-width: 700px; margin: 0 auto; font-size: 1.3rem;">Las decisiones se toman sin respaldo analítico, limitando el crecimiento empresarial.</p>
+            <div class="highlight" style="max-width: 700px; margin: 2rem auto 0;">
+                <p style="font-size: 1.1rem;">Existe una necesidad urgente de soluciones de <strong>lenguaje natural</strong> que permitan democratizar el acceso a la información estructurada.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: Solución -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">La Solución</p>
+            <h2>Lenguaje natural como interfaz de datos</h2>
+            <p>BIGENIA elimina intermediarios técnicos. El usuario pregunta en lenguaje cotidiano y obtiene gráficos interactivos.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="icon">💬</div>
+                    <h3>Entrada Natural</h3>
+                    <p>"Mostrar ventas por país" — sin escribir SQL.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🤖</div>
+                    <h3>Agentes de IA</h3>
+                    <p>Arquitectura multiagente que orquesta todo el flujo.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">📊</div>
+                    <h3>Gráficos Interactivos</h3>
+                    <p>Plotly.js con zoom, filtrado y exploración.</p>
+                </div>
+            </div>
+            <div class="tags">
+                <span class="tag">Gemini</span>
+                <span class="tag">Vanna AI</span>
+                <span class="tag">PostgreSQL</span>
+                <span class="tag">Plotly</span>
+                <span class="tag">React</span>
+                <span class="tag">LangSmith</span>
+                <span class="tag">pgvector</span>
+                <span class="tag">RAG</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: Arquitectura -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Arquitectura</p>
+            <h2>Flujo de trabajo en 8 pasos</h2>
+            <div class="flow">
+                <div class="flow-item"><span class="num">1</span><span>Recepción de la consulta del usuario</span></div>
+                <div class="flow-item"><span class="num">2</span><span>Caché semántico (base vectorial)</span></div>
+                <div class="flow-item"><span class="num">3</span><span>Delegación al Agente Decisor</span></div>
+                <div class="flow-item"><span class="num">4</span><span>Extracción de contexto (RAG)</span></div>
+                <div class="flow-item"><span class="num">5</span><span>Generación Text2SQL</span></div>
+                <div class="flow-item"><span class="num">6</span><span>Decisión de visualización</span></div>
+                <div class="flow-item"><span class="num">7</span><span>Consolidación de resultados</span></div>
+                <div class="flow-item"><span class="num">8</span><span>Renderizado del gráfico interactivo</span></div>
+            </div>
+            <div class="highlight" style="margin-top: 1.5rem;">
+                <p>Arquitectura desacoplada: cada agente asume un rol especializado, facilitando el mantenimiento y futuras actualizaciones.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: Agente Decisor -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Agente Decisor</p>
+            <h2>🧠 Orquestador central</h2>
+            <p>Clasifica la intención mediante Gemini con salida estructurada y enruta la consulta.</p>
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <h3>✅ Válida y clara</h3>
+                    <p>Continúa con el pipeline: SQL → Visualización.</p>
+                </div>
+                <div class="card">
+                    <h3>❓ Válida pero ambigua</h3>
+                    <p>Genera pregunta de clarificación (máx. 1 consecutiva).</p>
+                </div>
+                <div class="card">
+                    <h3>🚫 Fuera de alcance</h3>
+                    <p>Responde que excede las capacidades del sistema.</p>
+                </div>
+                <div class="card">
+                    <h3>💬 Conversacional</h3>
+                    <p>Saludos, despedidas — respuesta apropiada.</p>
+                </div>
+            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.95rem;">También resuelve contexto: "lo mismo pero por mes" → consulta auto-contenida.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Agente Text2SQL -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Agente Text2SQL</p>
+            <h2>🗃️ Lenguaje natural → SQL</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>RAG para contexto</h3>
+                    <p>Embedding de la consulta → búsqueda por coseno en la documentación del esquema → inyección en el prompt.</p>
+                    <h3 style="margin-top: 1.5rem;">Validación de seguridad</h3>
+                    <p>Solo SELECT. Escaneo de palabras destructivas (DELETE, DROP, UPDATE...). Bloqueo inmediato si se detecta.</p>
+                </div>
+                <div>
+                    <h3>Mecanismo de reintento</h3>
+                    <p>Si la SQL falla al ejecutarse:</p>
+                    <ol style="color: var(--muted); padding-left: 1.2rem; font-size: 0.95rem; line-height: 2;">
+                        <li>Captura el error de PostgreSQL</li>
+                        <li>Construye prompt de refinamiento</li>
+                        <li>Segunda invocación al LLM</li>
+                        <li>Re-validación y ejecución</li>
+                    </ol>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Máximo 2 intentos, transparente para el usuario.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Agente Visualización -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Agente de Visualización</p>
+            <h2>📈 Datos → Gráfico interactivo</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>Pipeline de 5 etapas</h3>
+                    <ol style="color: var(--muted); padding-left: 1.2rem; font-size: 1rem; line-height: 2.2;">
+                        <li>Validación de datos</li>
+                        <li>Análisis de metadata del DataFrame</li>
+                        <li>Decisión y generación de código Plotly</li>
+                        <li>Ejecución con loop de corrección</li>
+                        <li>Serialización a JSON</li>
+                    </ol>
+                </div>
+                <div>
+                    <h3>9 tipos de gráfico</h3>
+                    <p>Barras, líneas, torta, dispersión, histograma, mapa de calor, diagrama de caja, indicador, tabla.</p>
+                    <h3 style="margin-top: 1.2rem;">Edición generativa</h3>
+                    <p>El usuario puede modificar gráficos existentes con lenguaje natural: colores, filtros, tipo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: Interfaz -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Interfaz de Usuario</p>
+            <h2>Diseño centrado en el usuario</h2>
+            <p>React + Tailwind CSS + Zustand</p>
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="icon">🎨</div>
+                    <h3>Modo claro / oscuro</h3>
+                    <p>Mejora accesibilidad y reduce fatiga visual.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">⚡</div>
+                    <h3>Feedback inmediato</h3>
+                    <p>Spinners y skeleton screens durante la generación.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">✏️</div>
+                    <h3>Edición generativa</h3>
+                    <p>"Hacé el gráfico verde" → modificación instantánea.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🖼️</div>
+                    <h3>Galería de gráficos</h3>
+                    <p>Acceso centralizado separado del historial de chat.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: Evaluación -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Evaluación</p>
+            <h2>LLM-as-a-Judge</h2>
+            <p>35 casos de prueba · Modelo juez: gpt-oss-120b vía Groq · Rúbrica estricta · Integrado con LangSmith</p>
+            <table class="table">
+                <thead>
+                    <tr><th>Componente</th><th>Éxito</th><th>Estado</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Agente Decisor</strong></td><td>100.0%</td><td><span class="badge">Excelente</span></td></tr>
+                    <tr><td><strong>Agente Text2SQL</strong></td><td>92.9%</td><td><span class="badge">Muy bueno</span></td></tr>
+                    <tr><td><strong>Agente Visualización</strong></td><td>96.9%</td><td><span class="badge">Sobresaliente</span></td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 1.5rem; font-size: 0.95rem;">Degradación leve en consultas con múltiples JOINs complejos — límite operativo identificado.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: Conclusiones -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label">Conclusiones</p>
+            <h2>Viabilidad demostrada</h2>
+            <ul class="checklist">
+                <li><p><strong>Democratización efectiva</strong> de la analítica de datos en PyMEs mediante IA Generativa.</p></li>
+                <li><p><strong>Abstracción total</strong> de la complejidad técnica — interfaz directa usuario ↔ base de datos.</p></li>
+                <li><p><strong>Guardrails resilientes</strong> que mitigan peticiones fuera de dominio y garantizan integridad.</p></li>
+                <li><p><strong>Límites claros</strong> en JOINs complejos, sin invalidar la utilidad estratégica.</p></li>
+                <li><p><strong>Autonomía analítica real</strong> para organizaciones con recursos de TI limitados.</p></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: Cierre -->
+    <div class="slide">
+        <div class="slide-content center">
+            <h1>Gracias</h1>
+            <p class="subtitle">BIGENIA — Trabajo Final de Grado · 2026</p>
+            <p style="margin-top: 2rem; font-size: 1rem;">Lucas J. Martinez · Nahuel A. Carro<br>Director: Prof. Javier D. Rabuch</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const progress = document.getElementById('progress');
+    const counter = document.getElementById('counter');
+    let current = 0;
+
+    function goTo(index) {
+        if (index < 0 || index >= slides.length) return;
+        slides[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+        progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+        counter.textContent = (current + 1) + ' / ' + slides.length;
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); next(); }
+        if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); prev(); }
+        if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+        if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+    });
+
+    document.getElementById('deck').addEventListener('click', (e) => {
+        const x = e.clientX / window.innerWidth;
+        if (x > 0.3) next(); else prev();
+    });
+
+    goTo(0);
+</script>
+
+</body>
+</html>
