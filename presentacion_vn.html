@@ -88,6 +88,7 @@
         .slide.active {
             opacity: 1;
             pointer-events: all;
+            z-index: 10;
         }
 
         .slide-content {
@@ -1083,7 +1084,6 @@
             if (e.key === 'Home') { e.preventDefault(); goTo(0); }
             if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
         });
-
 
 
 
