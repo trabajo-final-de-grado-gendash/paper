@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIGENIA – Defensa de Tesis · 2026</title>
+    <meta name="description"
+        content="Implementación de una Herramienta de BI basada en Lenguaje Natural para PyMEs – Lucas J. Martinez y Nahuel A. Carro">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #080e1c;
+            --bg2: #0f172a;
+            --card: #111827;
+            --card2: #1a2540;
+            --text: #f1f5f9;
+            --muted: #8fa3be;
+            --accent: #38bdf8;
+            --purple: #a78bfa;
+            --green: #10b981;
+            --rose: #f43f5e;
+            --border: rgba(56, 189, 248, 0.10);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 700px;
+            height: 700px;
+            top: -250px;
+            right: -200px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, transparent 70%);
+        }
+
+        body::after {
+            width: 600px;
+            height: 600px;
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.05) 0%, transparent 70%);
+        }
+
+        .deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 5.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .slide-content {
+            max-width: 1080px;
+            width: 100%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .anim {
+            animation: fadeUp 0.55s calc(var(--i, 0) * 110ms) both ease-out;
+        }
+
+        h1 {
+            font-size: 5.2rem;
+            font-weight: 900;
+            letter-spacing: -3px;
+            line-height: 0.95;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            color: var(--text);
+        }
+
+        .label {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3.5px;
+            color: var(--accent);
+            margin-bottom: 0.7rem;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--muted);
+            line-height: 1.55;
+            margin-top: 0.6rem;
+        }
+
+        p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .cite {
+            display: inline-block;
+            margin-top: 0.55rem;
+            font-size: 0.67rem;
+            font-style: italic;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.07);
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            border-radius: 5px;
+            padding: 0.12rem 0.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem 1.5rem;
+        }
+
+        .card .icon {
+            font-size: 1.75rem;
+            display: block;
+            margin-bottom: 0.55rem;
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.35rem;
+        }
+
+        .card p {
+            font-size: 0.88rem;
+            margin: 0;
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.1rem;
+            margin-top: 1.5rem;
+        }
+
+        .g22 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.1rem;
+            margin-top: 1.4rem;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.06), rgba(167, 139, 250, 0.06));
+            border: 1px solid rgba(56, 189, 248, 0.16);
+            border-radius: 13px;
+            padding: 1.2rem 1.7rem;
+            margin-top: 1.4rem;
+        }
+
+        .highlight p {
+            color: var(--text);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.3rem;
+        }
+
+        .tag {
+            background: rgba(56, 189, 248, 0.07);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            padding: 0.32rem 0.8rem;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+            margin-top: 1.3rem;
+        }
+
+        .flow-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--card);
+            border-radius: 10px;
+            padding: 0.8rem 1.05rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        .flow-item .num {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--accent);
+            min-width: 20px;
+        }
+
+        .flow-item span {
+            font-size: 0.86rem;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .intent-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.1rem 1.3rem;
+        }
+
+        .intent-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .intent-card p {
+            font-size: 0.84rem;
+            margin: 0;
+        }
+
+        .bar-chart {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 210px 1fr 80px;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .bar-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+            text-align: right;
+        }
+
+        .bar-label small {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .bar-track {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 999px;
+            height: 22px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            width: 0;
+            transition: width 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+        }
+
+        .bar-pct {
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .slide.active .bar-fill {
+            width: var(--bar-w);
+        }
+
+        .checklist {
+            margin-top: 1.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+        }
+
+        .check-item .ico {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .check-item p {
+            margin: 0;
+            font-size: 0.97rem;
+            color: var(--text);
+        }
+
+        .video-wrap {
+            width: 100%;
+            max-height: 58vh;
+            aspect-ratio: 16/9;
+            background: #060b14;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(56, 189, 248, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.2rem;
+            position: relative;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+
+        .video-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.04), rgba(167, 139, 250, 0.04));
+        }
+
+        .video-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.03) 3px, rgba(0, 0, 0, 0.03) 4px);
+        }
+
+        .play-btn {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.12);
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+            transition: background 0.2s, transform 0.2s, border-color 0.2s;
+        }
+
+        .video-wrap:hover .play-btn {
+            background: rgba(56, 189, 248, 0.22);
+            border-color: var(--accent);
+            transform: scale(1.06);
+        }
+
+        .video-instructions {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .video-instructions p {
+            font-size: 0.98rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-instructions code {
+            font-size: 0.76rem;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'SF Mono', Consolas, monospace;
+        }
+
+        .judge-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 1.3rem 1.4rem;
+            border-top: 3px solid;
+        }
+
+        .judge-card .icon {
+            font-size: 1.6rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .judge-card h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        .judge-card p {
+            font-size: 0.84rem;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            transition: width 0.4s ease;
+            z-index: 200;
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 1.6rem;
+            right: 2.2rem;
+            font-size: 0.78rem;
+            color: rgba(148, 163, 184, 0.6);
+            z-index: 200;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .nav-hint {
+            position: fixed;
+            bottom: 1.6rem;
+            left: 2.2rem;
+            font-size: 0.7rem;
+            color: rgba(148, 163, 184, 0.35);
+            z-index: 200;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 1.2rem 0;
+        }
+
+        code {
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.82em;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.07);
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+        }
+
+        ol.clean {
+            color: var(--muted);
+            padding-left: 1.2rem;
+            font-size: 0.87rem;
+            line-height: 2;
+        }
+
+        /* Global Additions for better design */
+        .global-logo {
+            position: fixed;
+            top: 1.5rem;
+            right: 2.2rem;
+            z-index: 200;
+            opacity: 0.85;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .global-logo img {
+            height: 48px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+            background: white;
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .slide.full-img-slide {
+            padding: 2rem 5.5rem;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .slide.full-img-slide .slide-content {
+            max-width: 100%;
+            height: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .slide.full-img-slide h2 {
+            position: static;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 1.4rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin-top: 0.5rem;
+            align-self: flex-start;
+        }
+
+        .slide.full-img-slide .label {
+            position: static;
+            margin-bottom: 0;
+            align-self: flex-start;
+        }
+
+        .slide.full-img-slide img {
+            max-width: 95vw;
+            max-height: 72vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border: none !important;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .cover-logo {
+            margin-bottom: 2.5rem;
+        }
+
+        .cover-logo img {
+            height: 110px;
+            filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.1));
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        /* Premium Web App Feel */
+        body {
+            background: radial-gradient(ellipse at bottom, #0f172a 0%, #080e1c 100%);
+        }
+
+        .slide {
+            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.2) 0%, transparent 100%);
+        }
+
+        h1 {
+            text-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
+        }
+
+        .card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="global-logo" id="globalLogo">
+        <img src="imagenes/logo-up.png" alt="Universidad de Palermo">
+    </div>
+
+    <div class="progress-bar" id="progress"></div>
+    <div class="slide-counter" id="counter"></div>
+    <div class="nav-hint">&#8592; &#8594; &middot; Espacio &middot; Clic para navegar</div>
+    <div class="deck" id="deck">
+
+        <!-- ===== SLIDE 1: PORTADA ===== -->
+        <div class="slide active">
+            <div class="slide-content center">
+                <div class="cover-logo anim" style="--i:0">
+                    <img src="imagenes/logo-up.png" alt="Universidad de Palermo">
+                </div>
+                <p class="label anim" style="--i:1">Trabajo Final de Grado &middot; 2026</p>
+                <h1 class="anim" style="--i:2" style="font-size: 5.5rem; margin-bottom: 0.5rem;">BIGENIA</h1>
+                <p class="subtitle anim" style="--i:3" style="font-size: 1.4rem; color: #fff; font-weight: 500;">
+                    Implementación de una Herramienta de Análisis de Datos para realizar Inteligencia de Negocios basada
+                    en Lenguaje Natural para PyMEs</p>
+                <p class="anim" style="--i:4; margin-top:1rem; font-size:1.1rem; color: var(--accent);">Dise&#241;o de
+                    una arquitectura de
+                    agentes de IA para la generaci&#243;n din&#225;mica de gr&#225;ficos</p>
+                <div class="anim"
+                    style="--i:5; margin-top:3.5rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.15); display: flex; justify-content: center; gap: 5rem; text-align: left;">
+                    <div>
+                        <p
+                            style="font-size:0.85rem; color:var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem;">
+                            Alumnos</p>
+                        <p style="font-size:1.1rem; font-weight: 600; color:var(--text); line-height: 1.5;">Lucas J.
+                            Martinez<br>Nahuel A. Carro</p>
+                    </div>
+                    <div>
+                        <p
+                            style="font-size:0.85rem; color:var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem;">
+                            Director</p>
+                        <p style="font-size:1.1rem; font-weight: 600; color:var(--text); line-height: 1.5;">Prof. Javier
+                            D. Rabuch</p>
+                    </div>
+                    <div>
+                        <p
+                            style="font-size:0.85rem; color:var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem;">
+                            Instituci&#243;n</p>
+                        <p style="font-size:1.1rem; font-weight: 600; color:var(--text); line-height: 1.5;">Universidad
+                            de Palermo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 2: AGENDA ===== -->
+        <div class="slide">
+            <div class="slide-content">
+                <p class="label anim" style="--i:0">Contenido</p>
+                <h2 class="anim" style="--i:1">Agenda de la presentaci&#243;n</h2>
+                <ol class="clean anim"
+                    style="--i:2; margin-top:1.8rem; font-size:1.15rem; line-height:2.2; max-width: 600px; font-weight: 500;">
+                    <li>El Problema y la Oportunidad</li>
+                    <li>La Soluci&#243;n: BIGENIA</li>
+                    <li>Arquitectura del Sistema</li>
+                    <li>Sistema Multiagente</li>
+                    <li>Interfaz de Usuario</li>
+                    <li>Demostraci&#243;n</li>
+                    <li>Evaluaci&#243;n y Resultados</li>
+                    <li>Conclusiones</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 3: PROBLEMA ===== -->
+        <div class="slide">
+            <div class="slide-content">
+                <p class="label anim" style="--i:0">El Problema</p>
+                <h2 class="anim" style="--i:1">Las PyMEs no pueden acceder a sus propios datos</h2>
+                <p class="anim" style="--i:2; margin-top:0.5rem;">Son el motor de las econom&#237;as latinoamericanas,
+                    pero enfrentan barreras cr&#237;ticas para adoptar herramientas de Business Intelligence.</p>
+                <div class="g3 anim" style="--i:3">
+                    <div class="card"><span class="icon">&#128176;</span>
+                        <h3>Costos elevados de plataformas BI</h3>
+                        <p>Licencias e infraestructura que exceden el presupuesto de la PyME.</p><span
+                            class="cite">Tovar, 2011</span>
+                    </div>
+                    <div class="card"><span class="icon">&#127962;</span>
+                        <h3>Sin departamentos de TI dedicados</h3>
+                        <p>Ausencia de personal que gestione infraestructuras de datos complejas.</p><span
+                            class="cite">Cordero, 2020</span>
+                    </div>
+                    <div class="card"><span class="icon">&#128279;</span>
+                        <h3>Complejidad percibida al adoptar tecnolog&#237;a</h3>
+                        <p>Interfaces t&#233;cnicas que desalientan la modernizaci&#243;n del sector empresarial.</p>
+                        <span class="cite">Nurqamarani, 2021</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 3: OPORTUNIDAD ===== -->
+        <div class="slide">
+            <div class="slide-content">
+                <p class="label anim" style="--i:0">La Oportunidad</p>
+                <h2 class="anim" style="--i:1">La IA Generativa como motor de innovaci&#243;n</h2>
+                <div class="g2 anim" style="--i:2">
+                    <div class="card" style="border-color:rgba(56,189,248,0.28);">
+                        <span class="icon">&#129302;</span>
+                        <h3>LLMs como puerta de entrada a los datos</h3>
+                        <span class="cite">Barbon, 2024</span>
+                    </div>
+                    <div class="card" style="border-color:rgba(167,139,250,0.28);">
+                        <span class="icon">&#128200;</span>
+                        <h3>Agentes de IA como tendencia clave</h3>
+                        <span class="cite">Gartner, 2025</span>
+                    </div>
+                </div>
+                <div class="anim"
+                    style="--i:3; margin-top:1.5rem; background:rgba(244,63,94,0.06); border:1px solid rgba(244,63,94,0.2); border-left:4px solid var(--rose); border-radius:10px; padding:1.2rem 1.5rem;">
+                    <p style="margin:0; font-size:1rem; color:var(--text); line-height:1.6;">
+                        Las decisiones se toman <strong style="color:var(--rose);">sin respaldo anal&#237;tico</strong>,
+                        limitando el crecimiento empresarial.<br>
+                        Existe una necesidad urgente de democratizar el acceso a la informaci&#243;n estructurada.
+                    </p>
+                </div>
+                <div class="highlight anim" style="--i:4">
+                    <p style="font-size:1.12rem; font-weight:500; line-height:1.6;">&#191;Qu&#233; pasar&#237;a si
+                        cualquier usuario de negocio pudiera consultar sus datos simplemente <strong
+                            style="color:var(--accent)">hablando con ellos</strong>?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 4: SOLUCIÓN ===== -->
+        <div class="slide">
+            <div class="slide-content">
+                <p class="label anim" style="--i:0">La Soluci&#243;n</p>
+                <h2 class="anim" style="--i:1">BIGENIA: lenguaje natural como interfaz de datos</h2>
+                <p class="anim" style="--i:2; margin-top:0.5rem;">Un sistema de <strong
+                        style="color:var(--text)">Generative Business Intelligence (GenBI)</strong> que interpreta
+                    consultas en lenguaje cotidiano, las traduce en c&#243;digo estructurado y despliega los resultados
+                    mediante gr&#225;ficos interactivos.</p>
+                <div class="g3 anim" style="--i:3">
+                    <div class="card"><span class="icon">&#128172;</span>
+                        <h3>Entrada en lenguaje natural</h3>
+                        <p>"Mostr&#225; las ventas por pa&#237;s" &#8212; sin escribir una l&#237;nea de SQL.</p>
+                    </div>
+                    <div class="card"><span class="icon">&#129302;</span>
+                        <h3>Arquitectura multiagente</h3>
+                        <p>Orquestaci&#243;n especializada que gestiona todo el flujo de principio a fin.</p>
+                    </div>
+                    <div class="card"><span class="icon">&#128202;</span>
+                        <h3>Gr&#225;ficos interactivos</h3>
+                        <p>Plotly.js con zoom, filtrado y exploraci&#243;n de datos en tiempo real.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 5: ARQUITECTURA ===== -->
+        <div class="slide full-img-slide">
+            <p class="label anim" style="--i:0">Arquitectura</p>
+            <h2 class="anim" style="--i:1">Flujo de trabajo del sistema</h2>
+            <div class="slide-content center">
+                <img src="imagenes/diagrama_arquitectura.png" alt="Flujo de trabajo del sistema" class="anim"
+                    style="--i:2">
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 6: AGENTE DECISOR ===== -->
+    <div class="slide full-img-slide">
+        <p class="label anim" style="--i:0">Agente Decisor</p>
+        <h2 class="anim" style="--i:1">Orquestador central del pipeline</h2>
+        <div class="slide-content center">
+            <img src="imagenes/agente_decisor.png" alt="Orquestador central del pipeline" class="anim" style="--i:2">
+        </div>
+    </div>
+    </div>
+
+    <!-- ===== SLIDE 7: TEXT2SQL ===== -->
+    <div class="slide full-img-slide">
+        <p class="label anim" style="--i:0">Agente Text2SQL</p>
+        <h2 class="anim" style="--i:1">Lenguaje natural &#8594; SQL ejecutable</h2>
+        <div class="slide-content center">
+            <img src="imagenes/agente_text2sql.png" alt="Lenguaje natural &#8594; SQL ejecutable" class="anim"
+                style="--i:2">
+        </div>
+    </div>
+    </div>
+
+    <!-- ===== SLIDE 8: VISUALIZACIÓN ===== -->
+    <div class="slide full-img-slide">
+        <p class="label anim" style="--i:0">Agente de Visualizaci&#243;n</p>
+        <h2 class="anim" style="--i:1">Datos &#8594; Gr&#225;fico interactivo</h2>
+        <div class="slide-content center">
+            <img src="imagenes/agente_viz.png" alt="Datos &#8594; Gr&#225;fico interactivo" class="anim" style="--i:2">
+        </div>
+    </div>
+    </div>
+
+    <!-- ===== SLIDE 9: INTERFAZ ===== -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label anim" style="--i:0">Interfaz de Usuario</p>
+            <h2 class="anim" style="--i:1">Dise&#241;o centrado en el analista de negocio</h2>
+            <p class="anim" style="--i:2; margin-top:0.5rem;">React &middot; Tailwind CSS &middot; Zustand &#8212;
+                Prioridad en simplicidad, retroalimentaci&#243;n inmediata y accesibilidad.</p>
+            <div
+                style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 3rem; margin-top:1.8rem; align-items: center;">
+                <div class="anim" style="--i:3; display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="card" style="padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:1rem;">
+                        <span class="icon" style="margin:0; font-size:1.5rem;">&#127912;</span>
+                        <div>
+                            <h3 style="margin:0 0 0.2rem 0; font-size:0.95rem;">Modo claro / oscuro</h3>
+                            <p style="font-size:0.85rem; margin:0;">Reduce fatiga visual y mejora accesibilidad.</p>
+                        </div>
+                    </div>
+                    <div class="card" style="padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:1rem;">
+                        <span class="icon" style="margin:0; font-size:1.5rem;">&#9889;</span>
+                        <div>
+                            <h3 style="margin:0 0 0.2rem 0; font-size:0.95rem;">Feedback inmediato</h3>
+                            <p style="font-size:0.85rem; margin:0;">Spinners y estados de carga del LLM.</p>
+                        </div>
+                    </div>
+                    <div class="card" style="padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:1rem;">
+                        <span class="icon" style="margin:0; font-size:1.5rem;">&#9999;&#65039;</span>
+                        <div>
+                            <h3 style="margin:0 0 0.2rem 0; font-size:0.95rem;">Edici&#243;n generativa</h3>
+                            <p style="font-size:0.85rem; margin:0;">Modificaci&#243;n instant&#225;nea de
+                                gr&#225;ficos.</p>
+                        </div>
+                    </div>
+                    <div class="card" style="padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:1rem;">
+                        <span class="icon" style="margin:0; font-size:1.5rem;">&#128444;&#65039;</span>
+                        <div>
+                            <h3 style="margin:0 0 0.2rem 0; font-size:0.95rem;">Galer&#237;a de gr&#225;ficos</h3>
+                            <p style="font-size:0.85rem; margin:0;">Activos visuales separados del chat.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="anim" style="--i:4; display: flex; align-items: center; justify-content: center;">
+                    <img src="imagenes/inicio.png" alt="Interfaz de Usuario"
+                        style="width: 100%; max-height: 60vh; object-fit: contain; border-radius: 12px; border: 1px solid rgba(56,189,248,0.2); box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 10: DEMO VIDEO ===== -->
+    <div class="slide">
+        <div class="slide-content center">
+            <p class="label anim" style="--i:0">Demostraci&#243;n</p>
+            <h2 class="anim" style="--i:1">BIGENIA en acci&#243;n</h2>
+            <!--
+      INSTRUCCIONES PARA INSERTAR EL VIDEO:
+      Opcion A - Video local:
+        <video src="demo.mp4" controls style="width:100%;border-radius:14px;border:2px solid rgba(56,189,248,0.2);max-height:58vh;"></video>
+      Opcion B - YouTube:
+        <iframe width="100%" style="aspect-ratio:16/9;border-radius:14px;" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+      Opcion C - Drive:
+        <iframe src="https://drive.google.com/file/d/ID/preview" width="100%" style="aspect-ratio:16/9;border-radius:14px;" frameborder="0" allowfullscreen></iframe>
+    -->
+            <div class="video-wrap anim" style="--i:2">
+                <div class="play-btn">&#9654;</div>
+                <div class="video-instructions">
+                    <p>Insertar video de demostraci&#243;n aqu&#237;</p>
+                    <code>&lt;video src="demo.mp4"&gt; &middot; YouTube embed &middot; Google Drive</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 11: EVALUACIÓN ===== -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label anim" style="--i:0">Evaluaci&#243;n</p>
+            <h2 class="anim" style="--i:1">LLM-as-a-Judge</h2>
+            <p class="anim" style="--i:2; margin-top:0.5rem;">Evaluar SQL + gr&#225;ficos mediante comparaci&#243;n
+                exacta de texto es insuficiente. Se emplea un <strong style="color:var(--text)">modelo avanzado como
+                    juez imparcial</strong>, provisto de una r&#250;brica estricta, para auditar el ciclo
+                anal&#237;tico completo.</p>
+            <div class="g3 anim" style="--i:3">
+                <div class="judge-card" style="border-top-color:var(--accent);"><span class="icon">&#127919;</span>
+                    <h3>IntentJudge</h3>
+                    <p>&#191;Clasific&#243; correctamente la intenci&#243;n del usuario seg&#250;n el contexto de la
+                        sesi&#243;n?</p>
+                </div>
+                <div class="judge-card" style="border-top-color:var(--purple);"><span
+                        class="icon">&#128451;&#65039;</span>
+                    <h3>SQLJudge</h3>
+                    <p>&#191;El SQL resuelve la pregunta? &#191;Tablas, filtros y JOINs son correctos en el esquema?
+                    </p>
+                </div>
+                <div class="judge-card" style="border-top-color:var(--green);"><span class="icon">&#128202;</span>
+                    <h3>PlotlyJudge</h3>
+                    <p>Ejecuta el c&#243;digo Python/Plotly en un sandbox seguro y verifica que la figura compile.
+                    </p>
+                </div>
+            </div>
+            <div class="highlight anim" style="--i:4">
+                <p style="font-size:0.9rem;"><strong style="color:var(--text)">35 casos de prueba</strong> &middot;
+                    4 categor&#237;as (v&#225;lidas, conversacionales, fuera de dominio, ambig&#252;edades) &middot;
+                    Modelo juez: <strong style="color:var(--accent)">gpt-oss-120b v&#237;a Groq</strong> &middot;
+                    Puntaje continuo 1&#8211;5 + justificaci&#243;n &middot; Integrado con <strong
+                        style="color:var(--text)">LangSmith</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 12: RESULTADOS ===== -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label anim" style="--i:0">Resultados</p>
+            <h2 class="anim" style="--i:1">Desempe&#241;o sobre 35 casos de prueba</h2>
+            <div class="bar-chart anim" style="--i:2">
+                <div class="bar-row">
+                    <div class="bar-label">Agente Decisor<small>Clasificaci&#243;n de intenci&#243;n</small></div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="--bar-w:100%;background:linear-gradient(90deg,var(--green),#34d399);"></div>
+                    </div>
+                    <div class="bar-pct" style="color:var(--green);">100%</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Agente Visualizador<small>Generaci&#243;n de gr&#225;ficos</small></div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="--bar-w:96.9%;background:linear-gradient(90deg,var(--accent),#7dd3fc);"></div>
+                    </div>
+                    <div class="bar-pct" style="color:var(--accent);">96.9%</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Agente Text2SQL<small>Generaci&#243;n de SQL</small></div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="--bar-w:92.9%;background:linear-gradient(90deg,var(--purple),#c4b5fd);"></div>
+                    </div>
+                    <div class="bar-pct" style="color:var(--purple);">92.9%</div>
+                </div>
+            </div>
+            <div class="anim"
+                style="--i:3; margin-top:2.5rem; background:rgba(244,63,94,0.06); border:1px solid rgba(244,63,94,0.2); border-left:4px solid var(--rose); border-radius:10px; padding:1rem 1.2rem;">
+                <p style="margin:0; font-size:0.9rem; color:var(--text); line-height:1.4;">
+                    <strong>Análisis del 7.1% (Text2SQL):</strong> Los fallos se debieron a consultas con <em>múltiples
+                        JOINs</em>, el mecanismo de reintento mitiga la mayoría de errores sintácticos.
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===== SLIDE LIMITACIONES Y FUTURO ===== -->
+    <div class="slide">
+        <div class="slide-content">
+            <p class="label anim" style="--i:0">Perspectivas</p>
+            <h2 class="anim" style="--i:1">Limitaciones y Trabajo Futuro</h2>
+            <div class="g2 anim" style="--i:2">
+                <div class="card" style="border-top: 3px solid var(--rose);">
+                    <span class="icon">&#9888;&#65039;</span>
+                    <h3>Limitaciones Actuales</h3>
+                    <ul
+                        style="color:var(--muted); font-size: 0.95rem; margin-top: 1rem; padding-left: 1.2rem; line-height: 1.6;">
+                        <li style="margin-bottom:0.5rem">Consultas con complejidad de múltiples JOINs.</li>
+                        <li style="margin-bottom:0.5rem">Bases de datos gigantes (límites de tokens en DDL enviado al
+                            LLM).</li>
+                        <li style="margin-bottom:0.5rem"><strong>Latencia acumulada:</strong> El pipeline multi-agente
+                            suma el tiempo de respuesta de múltiples llamadas al LLM (Decision &rarr; Vanna &rarr; Viz).
+                        </li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 3px solid var(--accent);">
+                    <span class="icon">&#128640;</span>
+                    <h3>Trabajo Futuro</h3>
+                    <ul
+                        style="color:var(--muted); font-size: 0.95rem; margin-top: 1rem; padding-left: 1.2rem; line-height: 1.6;">
+                        <li style="margin-bottom:0.5rem">Creación de una sección de <strong>Dashboards</strong>
+                            interactivos para agrupar múltiples gráficos.</li>
+                        <li style="margin-bottom:0.5rem">Soporte para <strong>múltiples fuentes de datos</strong>
+                            adicionales (Google Sheets, archivos Excel, CSVs).</li>
+                        <li><strong>Prueba piloto</strong>: Implementar la solución en una PyME real para recolectar
+                            feedback de usuarios.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 13: CONCLUSIONES ===== -->
+    <div class="slide full-img-slide">
+        <p class="label anim" style="--i:0">Conclusiones</p>
+        <h2 class="anim" style="--i:1">Viabilidad demostrada emp&#237;ricamente</h2>
+        <div class="slide-content center">
+            <img src="imagenes/conclusiones.png" alt="Viabilidad demostrada emp&#237;ricamente" class="anim"
+                style="--i:2; max-height: 55vh;">
+            <div class="anim"
+                style="--i:3; background:rgba(16, 185, 129, 0.12); border:1px solid rgba(16, 185, 129, 0.3); border-radius:12px; padding:1.2rem 2rem; max-width: 900px; width: 100%; margin-top: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: left; display: flex; align-items: center; gap: 1.5rem;">
+                <span style="font-size: 2.2rem;">&#128200;</span>
+                <div>
+                    <h3 style="color:var(--text); font-size:1.1rem; margin-bottom:0.2rem; font-weight: 700;">Impacto de
+                        Negocio</h3>
+                    <p style="color:rgba(255,255,255,0.85); font-size:0.95rem; margin:0; line-height: 1.5;">Reducción
+                        proyectada del tiempo de creación de reportes: <strong>de días a minutos</strong>,
+                        democratizando el acceso a la analítica de datos sin intermediarios técnicos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- ===== SLIDE 14: GRACIAS ===== -->
+    <div class="slide">
+        <div class="slide-content center">
+            <div class="anim" style="--i:0; text-align:center;">
+                <h1 style="font-size:5.2rem; letter-spacing:-3px;">Gracias</h1>
+                <p style="margin-top:1rem; font-size:1.1rem; color:var(--text);">Lucas J. Martinez
+                    &nbsp;&middot;&nbsp; Nahuel A. Carro</p>
+                <p style="margin-top:0.4rem; font-size:0.95rem;">Director: Prof. Javier D. Rabuch</p>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <script>
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const progress = document.getElementById('progress');
+        const counter = document.getElementById('counter');
+        const total = slides.length;
+        let current = 0, locked = false;
+
+        function goTo(i) {
+            if (locked || i < 0 || i >= total || i === current) return;
+            locked = true;
+            const glogo = document.getElementById('globalLogo');
+            if (glogo) glogo.style.opacity = (i === 0) ? '0' : '0.85';
+            const prev = slides[current], next = slides[i];
+            prev.classList.remove('active');
+            prev.querySelectorAll('.bar-fill').forEach(b => { b.style.transition = 'none'; b.style.width = '0'; });
+            current = i;
+            next.querySelectorAll('.anim').forEach(el => { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
+            next.querySelectorAll('.bar-fill').forEach(b => { b.style.transition = 'none'; b.style.width = '0'; void b.offsetWidth; b.style.transition = ''; b.style.width = ''; });
+            next.classList.add('active');
+            progress.style.width = (total > 1 ? (current / (total - 1)) * 100 : 100) + '%';
+            counter.textContent = (current + 1) + ' / ' + total;
+            setTimeout(() => { locked = false; }, 460);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (['ArrowRight', ' ', 'Enter', 'ArrowDown', 'PageDown'].includes(e.key)) { e.preventDefault(); goTo(current + 1); }
+            if (['ArrowLeft', 'Backspace', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(current - 1); }
+            if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+            if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+        });
+
+        document.getElementById('deck').addEventListener('click', e => {
+            if (e.target.closest('.video-wrap')) return;
+            e.clientX / window.innerWidth > 0.25 ? goTo(current + 1) : goTo(current - 1);
+        });
+
+        let tx = 0;
+        document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+        document.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) dx < 0 ? goTo(current + 1) : goTo(current - 1); }, { passive: true });
+
+
+        goTo(0);
+        const initGlogo = document.getElementById('globalLogo');
+        if (initGlogo) initGlogo.style.opacity = '0';
+
+    </script>
+</body>
+
+</html>
